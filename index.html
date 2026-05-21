@@ -1,0 +1,1309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Juan M. González — AI Operations Consultant · Austin, TX</title>
+<meta name="description" content="AI operations consultant in Austin. I take what you do by hand and make it run on its own. Well-built automation for operations-heavy businesses." />
+<link rel="icon" href="assets/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --persimmon:      #D96833;
+    --persimmon-deep: #C25729;
+    --oat:            #F4EFE6;
+    --oat-deep:       #EDE5D5;
+    --rule:           #D9D2C5;
+    --ink:            #1F1A14;
+    --ink-soft:       #2A241C;
+    --stone:          #5C544A;
+
+    --font-display: "Fraunces", Georgia, serif;
+    --font-body:    "Inter", system-ui, sans-serif;
+    --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+
+    --container-max: 1240px;
+    --container-pad: 56px;
+
+    --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+  html, body { margin: 0; padding: 0; overflow-x: clip; }
+  body {
+    background: var(--oat);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    position: relative;
+    isolation: isolate;
+  }
+
+  /* Paper grain — two SVG noise layers, multiply blend. */
+  body::before,
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: multiply;
+  }
+  body::before {
+    opacity: 0.45;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12  0 0 0 0 0.10  0 0 0 0 0.08  0 0 0 0.11 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+  body::after {
+    opacity: 0.07;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200'><filter id='b'><feTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 0.45  0 0 0 0 0.36  0 0 0 0 0.24  0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23b)'/></svg>");
+  }
+  body > * { position: relative; z-index: 2; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ── Layout primitives ───────────────────────────────────── */
+  .container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--container-pad);
+  }
+  .rule { border: 0; border-top: 1px solid var(--rule); margin: 0; }
+
+  .rail { display: block; }
+  .rail > .mono:first-child,
+  .rail > .mono-sm:first-child {
+    display: block;
+    margin-bottom: 24px;
+    color: var(--stone);
+  }
+
+  /* ── Type ────────────────────────────────────────────────── */
+  .mono {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--stone);
+    font-weight: 400;
+  }
+  .mono--ink { color: var(--ink); }
+  .display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(56px, 8vw, 104px);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    margin: 0;
+    font-optical-sizing: auto;
+    font-variation-settings: "opsz" 144;
+    text-wrap: balance;
+  }
+  .h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(34px, 4vw, 44px);
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    margin: 0;
+    font-optical-sizing: auto;
+    font-variation-settings: "opsz" 144;
+    text-wrap: balance;
+  }
+  .h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .lede {
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink);
+    max-width: 38ch;
+    margin: 0;
+  }
+  p.body {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin: 0 0 1em;
+    max-width: 56ch;
+  }
+  p.body:last-child { margin-bottom: 0; }
+
+  /* Persimmon dot — terminal period on each section h2. */
+  .dot {
+    display: inline-block;
+    width: 0.125em;
+    height: 0.125em;
+    background: var(--persimmon);
+    border-radius: 50%;
+    margin-left: 0.04em;
+    vertical-align: baseline;
+  }
+
+  /* Stamp chip — 8px persimmon disc + uppercase mono label. */
+  .stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--persimmon-deep);
+    font-weight: 400;
+  }
+  .stamp::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--persimmon);
+    flex: 0 0 auto;
+  }
+  .stamps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    align-items: center;
+  }
+
+  /* Motion · 01 Breath — staggered entrance for brand stamps. */
+  @keyframes breath {
+    0%   { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  /* Stamps are hidden until the user scrolls; JS adds .stamps--animate. */
+  .stamps .stamp { opacity: 0; }
+  .stamps--animate .stamp {
+    animation: breath 1200ms var(--ease) both;
+  }
+  .stamps--animate .stamp:nth-child(1) { animation-delay: 0ms; }
+  .stamps--animate .stamp:nth-child(2) { animation-delay: 500ms; }
+  .stamps--animate .stamp:nth-child(3) { animation-delay: 1000ms; }
+  @media (prefers-reduced-motion: reduce) {
+    .stamps .stamp { opacity: 1; }
+    .stamps--animate .stamp { animation: none; transform: none; }
+  }
+
+  /* ── Buttons ─────────────────────────────────────────────── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 22px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 15px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 200ms var(--ease), color 200ms var(--ease), transform 120ms var(--ease);
+    text-decoration: none;
+    line-height: 1;
+  }
+  .btn .arr { font-family: var(--font-mono); font-size: 13px; }
+  .btn-primary { background: var(--persimmon); color: #fff; }
+  .btn-primary:hover { background: var(--persimmon-deep); }
+  .btn-primary:active { transform: translateY(1px); }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: var(--ink); }
+  .btn-ghost:hover { background: var(--ink); color: var(--oat); }
+
+  /* ── Mark ────────────────────────────────────────────────── */
+  .mark {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+  }
+  .mark img { display: block; height: 32px; width: auto; }
+  .mark--lg img { height: 52px; }
+
+  /* ── Nav ─────────────────────────────────────────────────── */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--oat);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav .inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 22px var(--container-pad);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+  .nav .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin-left: auto;
+    margin-right: 8px;
+  }
+  .nav .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    padding: 6px 0;
+    border-bottom: 1px solid transparent;
+    transition: color 200ms var(--ease), border-color 200ms var(--ease);
+  }
+  .nav .nav-links a:hover,
+  .nav .nav-links a[aria-current="true"] {
+    color: var(--persimmon);
+    border-bottom-color: var(--persimmon);
+  }
+  @media (max-width: 720px) {
+    .nav .nav-links { display: none; }
+  }
+
+  /* ── Hero ────────────────────────────────────────────────── */
+  .hero {
+    min-height: calc(100vh - 76px);
+    display: flex;
+    align-items: center;
+    padding: 96px 0 120px;
+    position: relative;
+    isolation: isolate;
+  }
+  .hero > .container { position: relative; z-index: 2; }
+
+  /* Hero ink-wash motifs — persimmon + ink, peeking off-edge. */
+  .hero-wash {
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+    user-select: none;
+  }
+  .hero-wash--persimmon {
+    top: -160px;
+    right: -220px;
+    width: 940px;
+    height: 720px;
+  }
+  .hero-wash--ink {
+    bottom: -260px;
+    left: -180px;
+    width: 620px;
+    height: 480px;
+  }
+
+  /* Section ink-wash — same motif, spread throughout the page. */
+  .section { position: relative; }
+  .section-wash {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+  .section-wash--ink-tl {
+    top: -120px;
+    left: -200px;
+    width: 620px;
+    height: 480px;
+  }
+  .section-wash--persimmon-mr {
+    top: 18%;
+    right: -260px;
+    width: 700px;
+    height: 540px;
+  }
+  .section-wash--ink-bl {
+    bottom: -160px;
+    left: -220px;
+    width: 680px;
+    height: 520px;
+  }
+  .section-wash--persimmon-tr {
+    top: -160px;
+    right: -200px;
+    width: 620px;
+    height: 480px;
+  }
+  .section > .container { position: relative; z-index: 1; }
+  .hero .stack { display: flex; flex-direction: column; gap: 36px; max-width: 1000px; }
+  .hero .label-row { display: flex; align-items: center; gap: 14px; }
+  .hero .label-row .tick { width: 24px; height: 1px; background: var(--stone); }
+  .hero .ctas { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+
+  /* ── Sections ────────────────────────────────────────────── */
+  .section { padding: 120px 0; }
+  .section-head { margin-bottom: 64px; }
+  .section-head .mono { margin-bottom: 24px; display: block; }
+
+  /* ── About ───────────────────────────────────────────────── */
+  .about {
+    --about-portrait-aspect: 3 / 4;
+    --about-portrait-w: 340px;
+    --about-gap: 80px;
+  }
+  .about .cols {
+    display: grid;
+    grid-template-columns: var(--about-portrait-w) 1fr;
+    gap: var(--about-gap);
+    align-items: start;
+  }
+  .about .portrait {
+    display: block;
+    width: 100%;
+    aspect-ratio: var(--about-portrait-aspect);
+    background: var(--oat-deep);
+    overflow: hidden;
+  }
+  .about .portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    display: block;
+  }
+  .about .portrait-caption {
+    margin-top: 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .about .text-stack { display: flex; flex-direction: column; gap: 32px; }
+  .about .col-primary p { font-size: 17px; line-height: 1.65; max-width: 56ch; }
+  .about .col-secondary p { color: var(--stone); max-width: 56ch; }
+
+  /* ── Work ────────────────────────────────────────────────── */
+  .work .body-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    margin-bottom: 24px;
+  }
+  .work .client-meta {
+    display: block;
+    color: var(--stone);
+    margin: 0 0 14px;
+  }
+  .work .client {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.35;
+    letter-spacing: -0.005em;
+    color: var(--ink-soft);
+    margin: 0 0 40px;
+    max-width: 60ch;
+    grid-column: 1 / -1;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 64px;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+  }
+  .data-table thead th {
+    text-align: left;
+    padding: 16px 18px 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--stone);
+    font-weight: 400;
+    border-bottom: 1px solid var(--rule);
+    background: transparent;
+  }
+  .data-table thead th:first-child { padding-left: 0; }
+  .data-table thead th:last-child  { padding-right: 0; text-align: right; }
+  .data-table tbody td {
+    padding: 22px 18px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  .data-table tbody td:first-child {
+    padding-left: 0;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .data-table tbody td:last-child {
+    padding-right: 0;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+  }
+  .data-table tbody tr:last-child td { border-bottom: 0; }
+
+  /* Data row — stat left of table, bracketed by matching rules. */
+  .work-data {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 24px;
+    align-items: stretch;
+    margin: 56px 0 64px;
+  }
+  .work-data .data-table { margin-bottom: 0; }
+  .work-data .callout {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 16px;
+  }
+  .work-data .callout .v {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    color: var(--persimmon);
+    margin-top: -0.14em;
+  }
+  .work-data .callout .v .num {
+    display: block;
+    font-size: clamp(96px, 12vw, 168px);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+  }
+  .work-data .callout .v .unit {
+    display: block;
+    font-size: clamp(36px, 4vw, 56px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-top: 6px;
+  }
+  .work-data .callout .k {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--stone);
+    line-height: 1.5;
+    max-width: 30ch;
+  }
+
+  /* Pullquote — soft oat-deep panel, three typographic regions. */
+  .pullquote {
+    margin: 88px 0 64px;
+    padding: 0;
+    border: 0;
+    background: var(--oat-deep);
+  }
+  .pullquote > div {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 36px 40px 32px;
+    gap: 24px;
+  }
+  .pullquote .pq-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--stone);
+    padding: 0;
+    border: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pullquote .pq-eyebrow::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--persimmon);
+    flex: 0 0 auto;
+  }
+  .pullquote q {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.25;
+    color: var(--ink);
+    quotes: none;
+    display: block;
+    max-width: 28ch;
+    margin: 0;
+    padding: 0;
+  }
+  .pullquote q::before {
+    content: "\201C";
+    color: var(--persimmon);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 1.25em;
+    line-height: 0;
+    vertical-align: -0.05em;
+    margin-right: 0.04em;
+  }
+  .pullquote q::after {
+    content: "\201D";
+    color: var(--persimmon);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 1.25em;
+    line-height: 0;
+    vertical-align: -0.05em;
+    margin-left: 0.04em;
+  }
+  .pullquote .attr {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--stone);
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* ── Services ────────────────────────────────────────────── */
+  .services .intro { margin-bottom: 48px; }
+
+  /* Workflow diagram: CALL → SCOPE → BUILD → SHIP */
+  .workflow {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+    align-items: stretch;
+    gap: 14px;
+    margin: 8px 0 56px;
+  }
+  .workflow .step {
+    background: var(--oat-deep);
+    padding: 24px 22px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 168px;
+  }
+  .workflow .step-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .workflow .step-body {
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .workflow .step-duration {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .workflow .arrow {
+    align-self: center;
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--persimmon);
+    font-weight: 500;
+  }
+
+  /* Workflow breath animation — hidden until .workflow--animate is added by JS. */
+  .workflow > * { opacity: 0; }
+  .workflow--animate > * {
+    animation: breath 1200ms var(--ease) both;
+  }
+  .workflow--animate > *:nth-child(1) { animation-delay:    0ms; }
+  .workflow--animate > *:nth-child(2) { animation-delay:  260ms; }
+  .workflow--animate > *:nth-child(3) { animation-delay:  520ms; }
+  .workflow--animate > *:nth-child(4) { animation-delay:  780ms; }
+  .workflow--animate > *:nth-child(5) { animation-delay: 1040ms; }
+  .workflow--animate > *:nth-child(6) { animation-delay: 1300ms; }
+  .workflow--animate > *:nth-child(7) { animation-delay: 1560ms; }
+  @media (prefers-reduced-motion: reduce) {
+    .workflow > * { opacity: 1; }
+    .workflow--animate > * { animation: none; transform: none; }
+  }
+
+  .services .services-closer {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(28px, 3.2vw, 40px);
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    max-width: 32ch;
+    margin: 96px 0 56px;
+  }
+
+  /* ── Contact ─────────────────────────────────────────────── */
+  .contact .intro { margin-bottom: 56px; max-width: 56ch; }
+  .form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px 56px;
+    max-width: 720px;
+  }
+  .form .field { display: flex; flex-direction: column; }
+  .form .field.full { grid-column: 1 / -1; }
+  .form label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--stone);
+    margin-bottom: 12px;
+  }
+  .form input, .form textarea {
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: var(--ink);
+    padding: 12px 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--ink);
+    outline: none;
+    border-radius: 0;
+    resize: none;
+  }
+  .form textarea {
+    min-height: 110px;
+    padding: 14px 16px;
+    background: var(--oat-deep);
+    border: 1px solid var(--rule);
+    resize: vertical;
+  }
+  .form input:focus { border-bottom-color: var(--persimmon); }
+  .form textarea:focus { border-color: var(--ink); outline: none; }
+  .form .submit-row {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 16px;
+  }
+  .form .note { font-family: var(--font-body); font-size: 12px; color: var(--stone); }
+
+  /* ── Footer ──────────────────────────────────────────────── */
+  .footer {
+    background: var(--ink);
+    color: var(--oat);
+    padding: 48px 0 28px;
+    margin-top: 64px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 56px;
+    margin-bottom: 40px;
+  }
+  .footer-cols {
+    display: flex;
+    gap: 56px;
+  }
+  .footer-cols .footer-col { min-width: 0; }
+  .footer .mark { color: var(--oat); }
+  .footer-col h4 {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 13px;
+    margin: 0 0 14px;
+    letter-spacing: 0.04em;
+    color: var(--oat);
+  }
+  .footer-col p {
+    margin: 0 0 4px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.55;
+    color: rgba(244, 239, 230, 0.72);
+  }
+  .footer-col a {
+    color: rgba(244, 239, 230, 0.85);
+    border-bottom: 1px solid rgba(244, 239, 230, 0.18);
+    padding-bottom: 1px;
+    transition: color 200ms var(--ease), border-color 200ms var(--ease);
+  }
+  .footer-col a:hover { color: var(--oat); border-bottom-color: var(--oat); }
+
+  /* Wordmark unit — mark | vertical rule | italic tagline + mono. */
+  .footer-wordmark {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding-top: 0;
+  }
+  .footer-wordmark .mark img { height: 44px; }
+  .footer-wordmark-rule {
+    width: 1px;
+    align-self: stretch;
+    background: rgba(244, 239, 230, 0.22);
+  }
+  .footer-wordmark-text { display: flex; flex-direction: column; gap: 4px; }
+  .footer-tagline {
+    margin: 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.35;
+    color: rgba(244, 239, 230, 0.82);
+    max-width: 28ch;
+  }
+  .footer-mono {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(244, 239, 230, 0.55);
+  }
+
+  .footer .baseline {
+    padding-top: 16px;
+    border-top: 1px solid rgba(244, 239, 230, 0.18);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: rgba(244, 239, 230, 0.55);
+  }
+
+  /* ── Responsive ──────────────────────────────────────────── */
+  @media (max-width: 960px) {
+    :root { --container-pad: 28px; }
+    .about .cols,
+    .work .body-block,
+    .form { grid-template-columns: 1fr; gap: 32px; display: grid; }
+    .about .portrait { max-width: 320px; }
+    .pullquote { grid-template-columns: 1fr; }
+    .section { padding: 80px 0; }
+    .hero { padding: 64px 0 80px; min-height: auto; }
+    .work-data { grid-template-columns: 1fr; gap: 32px; }
+    .work-data .callout { padding-top: 0; }
+    .footer { padding: 48px 0 28px; margin-top: 56px; }
+    .pullquote { padding-left: 28px; padding-right: 28px; }
+    .workflow { grid-template-columns: 1fr; gap: 8px; }
+    .workflow .arrow { transform: rotate(90deg); padding: 4px 0; }
+    .workflow .step { min-height: 0; }
+    .footer-grid { grid-template-columns: 1fr; gap: 32px; margin-bottom: 32px; }
+    .footer-wordmark { padding-top: 12px; border-top: 1px solid rgba(244, 239, 230, 0.18); }
+    .footer .baseline { flex-direction: column; gap: 12px; align-items: flex-start; }
+  }
+
+  @media (max-width: 600px) {
+    .footer-cols { flex-direction: column; gap: 32px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ───────────────────── NAV ───────────────────── -->
+  <header class="nav">
+    <div class="inner">
+      <a href="#" class="mark" aria-label="JMG home">
+        <img src="assets/logo-primary.svg" alt="JMG" />
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#about">About</a>
+        <a href="#work">Work</a>
+        <a href="#services">Services</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <a href="#contact" class="btn btn-primary">
+        Start a conversation <span class="arr">&rarr;</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ───────────────────── HERO ───────────────────── -->
+  <section class="hero">
+    <!-- Persimmon ink-wash blob, top-right -->
+    <svg class="hero-wash hero-wash--persimmon" viewBox="0 0 820 620" aria-hidden="true" preserveAspectRatio="none">
+      <defs>
+        <filter id="hero-wash-p" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="28" />
+        </filter>
+      </defs>
+      <path d="M180,110 C100,90 50,200 96,290 C140,370 110,440 220,478 C346,520 498,468 600,398 C700,328 760,228 690,138 C620,42 488,32 358,68 C282,86 232,124 180,110 Z"
+            fill="#D96833" opacity="0.28" filter="url(#hero-wash-p)" />
+    </svg>
+    <!-- Ink blob, bottom-left, bleeds into About -->
+    <svg class="hero-wash hero-wash--ink" viewBox="0 0 560 420" aria-hidden="true" preserveAspectRatio="none">
+      <defs>
+        <filter id="hero-wash-i" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="22" />
+        </filter>
+      </defs>
+      <path d="M80,200 C40,130 120,42 210,56 C300,72 390,38 450,108 C510,170 466,264 376,294 C298,320 200,320 146,286 C94,252 84,232 80,200 Z"
+            fill="#1F1A14" opacity="0.08" filter="url(#hero-wash-i)" />
+    </svg>
+
+    <div class="container">
+      <div class="stack">
+        <div class="label-row">
+          <span class="tick" aria-hidden="true"></span>
+          <span class="mono mono--ink">AI Operations &middot; Austin, TX</span>
+        </div>
+
+        <h1 class="display">
+          I take what you do by hand and make it run on its own<span class="dot" aria-hidden="true"></span>
+        </h1>
+
+        <p class="lede">
+          No hype. No jargon. Just well-built automation for operations-heavy
+          businesses that are outgrowing how they work.
+        </p>
+
+        <div class="stamps" aria-hidden="true">
+          <span class="stamp">Implementation</span>
+          <span class="stamp">Operations</span>
+          <span class="stamp">Quiet systems</span>
+        </div>
+
+        <div class="ctas">
+          <a href="#contact" class="btn btn-ghost">
+            Start a conversation <span class="arr">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────── ABOUT ───────────────────── -->
+  <section class="section about" id="about">
+    <!-- Ink blob, top-left -->
+    <svg class="section-wash section-wash--ink-tl" viewBox="0 0 560 420" aria-hidden="true" preserveAspectRatio="none">
+      <defs>
+        <filter id="about-wash-i" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="22" />
+        </filter>
+      </defs>
+      <path d="M100,220 C50,150 140,50 240,64 C340,80 420,52 488,128 C544,188 492,288 400,318 C320,344 222,344 162,308 C108,272 96,250 100,220 Z"
+            fill="#1F1A14" opacity="0.09" filter="url(#about-wash-i)" />
+    </svg>
+    <div class="container">
+      <div class="rail section-head">
+        <span class="mono">01 &nbsp;/&nbsp; About</span>
+        <h2 class="h2">
+          An independent practice in Austin<span class="dot" aria-hidden="true"></span>
+        </h2>
+      </div>
+
+      <div class="rail">
+        <div class="cols">
+          <div>
+            <div class="portrait">
+              <img src="assets/portrait.jpeg" alt="Juan M. González" />
+            </div>
+            <div class="portrait-caption">Juan M. Gonz&aacute;lez &middot; Austin, TX</div>
+          </div>
+          <div class="text-stack">
+            <div class="col-primary">
+              <p class="body">
+                I&rsquo;m Juan Gonz&aacute;lez, an AI operations consultant
+                based in Austin. I work with small business owners in
+                services and professional firms who are running the
+                company themselves and feeling the friction.
+              </p>
+            </div>
+            <div class="col-secondary">
+              <p class="body">
+                My background is in project coordination and operations. I
+                spent four years managing 3,000+ projects and 2,400+ client
+                meetings at a B2B agency, translating complex requirements
+                into systems that actually moved. I&rsquo;ve worked inside
+                Salesforce, built multi-stage automation programs, led
+                account teams, and now apply that same operational
+                thinking to small business infrastructure using AI and
+                modern automation tools.
+              </p>
+              <p class="body">
+                The goal is always the same: less administrative weight,
+                more room to work.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────── WORK ───────────────────── -->
+  <section class="section work" id="work">
+    <!-- Persimmon blob, mid-right -->
+    <svg class="section-wash section-wash--persimmon-mr" viewBox="0 0 700 540" aria-hidden="true" preserveAspectRatio="none">
+      <defs>
+        <filter id="work-wash-p" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="26" />
+        </filter>
+      </defs>
+      <path d="M520,80 C600,110 660,210 612,308 C570,396 612,470 522,490 C418,514 308,476 222,428 C140,382 78,310 116,228 C152,150 248,118 348,108 C420,100 472,62 520,80 Z"
+            fill="#D96833" opacity="0.16" filter="url(#work-wash-p)" />
+    </svg>
+    <div class="container">
+      <div class="rail section-head">
+        <span class="mono">02 &nbsp;/&nbsp; Work</span>
+        <h2 class="h2">
+          Case study<span class="dot" aria-hidden="true"></span>
+        </h2>
+      </div>
+
+      <div class="rail">
+        <div>
+          <span class="mono client-meta">PureSteel Construction Inc. &middot; Dallas, TX</span>
+          <h3 class="client">From subcontractor onboarding to signed document filing, end to end.</h3>
+
+          <div class="body-block">
+            <p class="body">
+              PureSteel Construction Inc. is a commercial steel contractor based
+              in Dallas managing multiple active projects simultaneously.
+              The owner was handling subcontract agreements, change orders,
+              and subcontractor onboarding entirely by hand. Every document
+              drafted manually, every signature chased over email, every
+              signed PDF filed by hand.
+            </p>
+            <p class="body">
+              I designed and built a suite of interconnected automation
+              workflows, end to end, from subcontractor onboarding to
+              signed document filing. The systems are live, actively used,
+              and maintained by one person.
+            </p>
+          </div>
+
+          <div class="work-data">
+            <div class="callout">
+              <span class="v">
+                <span class="num" data-count="10" data-suffix="+">10+</span>
+                <span class="unit">hours</span>
+              </span>
+              <span class="k">
+                of manual administrative work eliminated per month
+              </span>
+            </div>
+
+            <table class="data-table" aria-label="PureSteel Construction Inc. results">
+              <thead>
+                <tr>
+                  <th scope="col">Workflow</th>
+                  <th scope="col">Before</th>
+                  <th scope="col">After</th>
+                  <th scope="col">Monthly time saved</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Auto-generated contract agreements</td>
+                  <td>45&ndash;60 min each</td>
+                  <td>~2 min</td>
+                  <td>6&ndash;10 hrs</td>
+                </tr>
+                <tr>
+                  <td>Change order approvals and contract generation</td>
+                  <td>40&ndash;70 min each</td>
+                  <td>~3 min</td>
+                  <td>2&ndash;6 hrs</td>
+                </tr>
+                <tr>
+                  <td>Automatic document filing and folder management</td>
+                  <td>5&ndash;10 min each</td>
+                  <td>Immediate</td>
+                  <td>1&ndash;2 hrs</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <figure class="pullquote">
+            <div>
+              <span class="pq-eyebrow">From the client</span>
+              <q>
+                Our processes are outperforming companies with dedicated
+                marketing and operations teams.
+              </q>
+              <figcaption class="attr">
+                Jonathan Arvizu &middot; Owner, PureSteel Construction Inc.
+              </figcaption>
+            </div>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────── SERVICES ───────────────────── -->
+  <section class="section services" id="services">
+    <!-- Ink blob, bottom-left -->
+    <svg class="section-wash section-wash--ink-bl" viewBox="0 0 680 520" aria-hidden="true" preserveAspectRatio="none">
+      <defs>
+        <filter id="services-wash-i" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="24" />
+        </filter>
+      </defs>
+      <path d="M140,80 C220,40 360,68 432,128 C500,184 612,168 624,260 C634,344 540,400 444,418 C338,438 220,452 142,400 C72,354 40,260 64,180 C80,128 108,98 140,80 Z"
+            fill="#1F1A14" opacity="0.08" filter="url(#services-wash-i)" />
+    </svg>
+    <div class="container">
+      <div class="rail section-head">
+        <span class="mono">03 &nbsp;/&nbsp; Services</span>
+        <h2 class="h2">
+          Simple by design<span class="dot" aria-hidden="true"></span>
+        </h2>
+      </div>
+
+      <div class="rail">
+        <div>
+          <p class="body intro">
+            It starts with a call. I learn how the business runs, where
+            work slows down, and what is actually worth automating. From
+            there we scope the build together. Most clients have a working
+            system within four to six weeks of our first conversation.
+          </p>
+
+          <div class="workflow" role="list" aria-label="Engagement workflow">
+            <div class="step" role="listitem">
+              <span class="step-label">01 &nbsp;/&nbsp; Call</span>
+              <p class="step-body">A short conversation. Free.</p>
+              <span class="step-duration">~45 minutes</span>
+            </div>
+            <span class="arrow" aria-hidden="true">&rarr;</span>
+            <div class="step" role="listitem">
+              <span class="step-label">02 &nbsp;/&nbsp; Scope</span>
+              <p class="step-body">Observe the work. Decide what is worth automating.</p>
+              <span class="step-duration">~1 week</span>
+            </div>
+            <span class="arrow" aria-hidden="true">&rarr;</span>
+            <div class="step" role="listitem">
+              <span class="step-label">03 &nbsp;/&nbsp; Build</span>
+              <p class="step-body">Wire the systems. Test the edge cases.</p>
+              <span class="step-duration">~1&ndash;3 weeks</span>
+            </div>
+            <span class="arrow" aria-hidden="true">&rarr;</span>
+            <div class="step" role="listitem">
+              <span class="step-label">04 &nbsp;/&nbsp; Ship</span>
+              <p class="step-body">Live, maintained, quietly running.</p>
+              <span class="step-duration">Ongoing</span>
+            </div>
+          </div>
+
+          <p class="services-closer">
+            If it happens more than once and follows a pattern, it can
+            probably be automated. That is where I start.
+          </p>
+
+          <a href="#contact" class="btn btn-ghost">
+            Start a conversation <span class="arr">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────── CONTACT ───────────────────── -->
+  <section class="section contact" id="contact">
+    <!-- Persimmon blob, top-right -->
+    <svg class="section-wash section-wash--persimmon-tr" viewBox="0 0 620 480" aria-hidden="true" preserveAspectRatio="none">
+      <defs>
+        <filter id="contact-wash-p" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="26" />
+        </filter>
+      </defs>
+      <path d="M160,90 C240,60 340,52 432,92 C520,128 580,210 552,290 C522,378 412,420 312,418 C220,416 116,388 76,308 C40,238 64,148 110,108 C130,90 144,96 160,90 Z"
+            fill="#D96833" opacity="0.18" filter="url(#contact-wash-p)" />
+    </svg>
+    <div class="container">
+      <div class="rail section-head">
+        <span class="mono">04 &nbsp;/&nbsp; Contact</span>
+        <h2 class="h2">
+          Start here<span class="dot" aria-hidden="true"></span>
+        </h2>
+      </div>
+
+      <div class="rail">
+        <div>
+          <p class="body intro">
+            If you are running the operations yourself and feeling the
+            weight of it, let&rsquo;s talk. Tell me what is taking the
+            most time and I will tell you whether it is worth automating.
+          </p>
+
+          <form class="form" id="contact-form">
+            <div class="field">
+              <label for="f-name">Name</label>
+              <input id="f-name" type="text" placeholder="Your name" autocomplete="name" />
+            </div>
+            <div class="field">
+              <label for="f-company">Company</label>
+              <input id="f-company" type="text" placeholder="Your company" autocomplete="organization" />
+            </div>
+            <div class="field full">
+              <label for="f-email">Email</label>
+              <input id="f-email" type="email" placeholder="name@domain.com" autocomplete="email" />
+            </div>
+            <div class="field full">
+              <label for="f-msg">What&rsquo;s taking the most time?</label>
+              <textarea id="f-msg" placeholder="A sentence or two is plenty."></textarea>
+            </div>
+            <div class="submit-row">
+              <button type="submit" class="btn btn-ghost">
+                Send <span class="arr">&rarr;</span>
+              </button>
+              <span class="note">I read every note personally.</span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────── FOOTER ───────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-wordmark">
+          <a href="#" class="mark" aria-label="JMG home">
+            <img src="assets/logo-inverted.svg" alt="JMG" />
+          </a>
+          <div class="footer-wordmark-rule" aria-hidden="true"></div>
+          <div class="footer-wordmark-text">
+            <p class="footer-tagline">Operations are never finished.<br />They just get better.</p>
+            <p class="footer-mono">AI Operations &middot; Austin, TX</p>
+          </div>
+        </div>
+        <div class="footer-cols">
+          <div class="footer-col">
+            <h4>Practice</h4>
+            <p>Juan M. Gonz&aacute;lez</p>
+            <p>AI Operations Consultant</p>
+            <p>Austin, Texas</p>
+          </div>
+          <div class="footer-col">
+            <h4>Reach</h4>
+            <p><a href="mailto:hello@gonzalezjuanm.com">hello@gonzalezjuanm.com</a></p>
+            <p><a href="#">gonzalezjuanm.com</a></p>
+            <p><a href="#contact">Start a conversation</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="baseline">
+        <span>&copy; 2026 &middot; Juan M. Gonz&aacute;lez</span>
+        <span>GONZALEZJUANM.COM</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Motion · 02 Precision — stat counter, triggered on viewport entry. -->
+  <script>
+    (function () {
+      var prefersReduced = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function animateCount(el, target, suffix, duration) {
+        var start = performance.now();
+        function frame(now) {
+          var t = Math.min(1, (now - start) / duration);
+          var v = (t >= 1) ? target : Math.floor(target * t);
+          el.textContent = v + suffix;
+          if (t < 1) requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }
+
+      function setupCounter() {
+        var el = document.querySelector('.callout .v .num');
+        if (!el) return;
+        var target = parseInt(el.getAttribute('data-count') || '0', 10);
+        var suffix = el.getAttribute('data-suffix') || '';
+        if (prefersReduced) {
+          el.textContent = target + suffix;
+          return;
+        }
+        el.textContent = '0' + suffix;
+        var fired = false;
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting && !fired) {
+              fired = true;
+              animateCount(el, target, suffix, 1500);
+              io.disconnect();
+            }
+          });
+        }, { threshold: 0.5 });
+        io.observe(el);
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupCounter);
+      } else {
+        setupCounter();
+      }
+    })();
+  </script>
+
+  <!-- Trigger workflow breath animation when it enters the viewport -->
+  <script>
+    (function () {
+      var workflow = document.querySelector('.workflow');
+      if (!workflow) return;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            workflow.classList.add('workflow--animate');
+            io.disconnect();
+          }
+        });
+      }, { threshold: 0.25 });
+      io.observe(workflow);
+    })();
+  </script>
+
+  <!-- Trigger stamp animation on first scroll -->
+  <script>
+    (function () {
+      var stamps = document.querySelector('.stamps');
+      if (!stamps) return;
+      function onFirstScroll() {
+        stamps.classList.add('stamps--animate');
+        window.removeEventListener('scroll', onFirstScroll, { passive: true });
+      }
+      window.addEventListener('scroll', onFirstScroll, { passive: true });
+    })();
+  </script>
+
+  <!-- Simple form submit handler -->
+  <script>
+    document.getElementById('contact-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var btn = this.querySelector('[type="submit"]');
+      btn.textContent = 'Sent';
+      btn.disabled = true;
+    });
+  </script>
+
+</body>
+</html>
