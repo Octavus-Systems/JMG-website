@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PureSteel Construction Inc. — Case Study · JMG</title>
+<link rel="icon" href="../../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --persimmon:      #D96833;
+  --persimmon-deep: #C25729;
+  --oat:            #F4EFE6;
+  --oat-deep:       #EDE5D5;
+  --rule:           #D9D2C5;
+  --ink:            #1F1A14;
+  --ink-soft:       #2A241C;
+  --stone:          #5C544A;
+  --f-display: "Fraunces", Georgia, serif;
+  --f-body:    "Inter", system-ui, sans-serif;
+  --f-mono:    "JetBrains Mono", ui-monospace, monospace;
+  --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #111; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+
+/* ── Stage ── */
+.stage {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.canvas {
+  position: relative;
+  width: 1280px; height: 720px;
+  transform-origin: center center;
+  flex-shrink: 0;
+}
+
+/* ── Slide base ── */
+.slide {
+  position: absolute; inset: 0;
+  width: 1280px; height: 720px;
+  background: var(--oat);
+  color: var(--ink);
+  overflow: hidden;
+  display: none;
+  isolation: isolate;
+}
+.slide.active { display: block; }
+
+/* Paper grain */
+.slide::before, .slide::after {
+  content: ""; position: absolute; inset: 0;
+  pointer-events: none; z-index: 100; mix-blend-mode: multiply;
+}
+.slide::before {
+  opacity: 0.45;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12  0 0 0 0 0.10  0 0 0 0 0.08  0 0 0 0.11 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+.slide::after {
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200'><filter id='b'><feTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 0.45  0 0 0 0 0.36  0 0 0 0 0.24  0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23b)'/></svg>");
+}
+
+/* ── Chrome ── */
+.sl-head, .sl-foot {
+  position: absolute; left: 72px; right: 72px; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--stone);
+}
+.sl-head { top: 34px; }
+.sl-foot { bottom: 34px; }
+.slide--dark .sl-head, .slide--dark .sl-foot { color: rgba(244,239,230,.45); }
+
+.sl-logo { height: 28px; width: auto; display: block; }
+
+/* Text mark for dark slides (avoids SVG background bleed) */
+.slide-mark {
+  font-family: var(--f-display); font-weight: 500; font-size: 19px;
+  letter-spacing: -0.01em; color: var(--oat); display: inline-flex;
+  align-items: baseline; font-optical-sizing: auto;
+  font-variation-settings: "opsz" 144; line-height: 1;
+}
+.slide-mark .dot { background: var(--persimmon); }
+
+/* ── Dot ── */
+.dot {
+  display: inline-block;
+  width: 0.125em; height: 0.125em;
+  background: var(--persimmon); border-radius: 50%;
+  margin-left: 0.04em; vertical-align: baseline;
+}
+
+/* ── Content zone ── */
+.sl-body {
+  position: absolute; inset: 82px 72px 68px; z-index: 5;
+  display: flex; flex-direction: column;
+}
+
+/* ── Type ── */
+.t-mono {
+  font-family: var(--f-mono); font-size: 11px;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--stone);
+}
+.slide--dark .t-mono { color: rgba(244,239,230,.45); }
+
+.t-stamp {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--f-mono); font-size: 11px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--persimmon-deep);
+}
+.t-stamp::before {
+  content: ""; width: 8px; height: 8px;
+  border-radius: 50%; background: var(--persimmon); flex: 0 0 auto;
+}
+
+.t-display {
+  font-family: var(--f-display); font-weight: 400;
+  font-size: 68px; line-height: 1.04; letter-spacing: -0.025em;
+  font-optical-sizing: auto; font-variation-settings: "opsz" 144;
+}
+.t-h1 {
+  font-family: var(--f-display); font-weight: 500;
+  font-size: 48px; line-height: 1.08; letter-spacing: -0.02em;
+  font-optical-sizing: auto; font-variation-settings: "opsz" 144;
+}
+.t-h2 {
+  font-family: var(--f-display); font-weight: 500;
+  font-size: 38px; line-height: 1.1; letter-spacing: -0.018em;
+  font-optical-sizing: auto; font-variation-settings: "opsz" 144;
+}
+.t-h3 {
+  font-family: var(--f-display); font-variation-settings: "opsz" 72;
+  font-weight: 500; font-size: 21px; line-height: 1.18;
+  letter-spacing: -0.01em;
+}
+.t-body {
+  font-family: var(--f-body); font-size: 14.5px;
+  line-height: 1.62; color: var(--ink-soft);
+}
+.slide--dark .t-body { color: rgba(244,239,230,.75); }
+.t-caption {
+  font-family: var(--f-body); font-size: 12.5px;
+  line-height: 1.55; color: var(--stone);
+}
+.slide--dark .t-caption { color: rgba(244,239,230,.55); }
+.t-italic {
+  font-family: var(--f-display); font-style: italic;
+  font-weight: 400; font-variation-settings: "opsz" 100;
+  font-size: 14px; color: var(--persimmon-deep);
+}
+
+/* ── Ink-wash blobs ── */
+.blob { position: absolute; pointer-events: none; z-index: 1; }
+
+/* ══════════════════════════════════════════════
+   SLIDE 01 — COVER
+══════════════════════════════════════════════ */
+.s-cover { background: var(--ink-soft); color: var(--oat); }
+
+.s-cover .cover-body {
+  position: absolute; left: 72px; right: 72px; bottom: 68px; top: 82px;
+  z-index: 5; display: flex; flex-direction: column; justify-content: flex-end;
+  gap: 0;
+}
+.s-cover .cover-client {
+  margin-bottom: 18px;
+}
+.s-cover .cover-title {
+  color: var(--oat); max-width: 640px; margin-bottom: 22px;
+}
+.s-cover .cover-lede {
+  color: rgba(244,239,230,.68); max-width: 560px; font-size: 14.5px;
+}
+
+/* ══════════════════════════════════════════════
+   SLIDE 02 — THE CLIENT
+══════════════════════════════════════════════ */
+.s-client .client-grid {
+  display: grid; grid-template-columns: 1fr 340px; gap: 20px;
+  flex: 1; align-items: start; margin-top: 8px;
+}
+.s-client .client-stats {
+  background: var(--ink); color: var(--oat);
+  padding: 28px 24px; display: flex; flex-direction: column;
+}
+.s-client .stat-row {
+  padding: 16px 0; border-bottom: 1px solid rgba(244,239,230,.12);
+}
+.s-client .stat-row:first-child { padding-top: 0; }
+.s-client .stat-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.s-client .stat-val {
+  font-family: var(--f-display); font-variation-settings: "opsz" 72;
+  font-weight: 500; font-size: 20px; letter-spacing: -0.01em;
+  color: var(--oat); line-height: 1.2;
+}
+.s-client .stat-key {
+  font-family: var(--f-mono); font-size: 9.5px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(244,239,230,.45); margin-top: 3px;
+}
+
+/* ══════════════════════════════════════════════
+   SLIDE 03 — THE PROBLEM
+══════════════════════════════════════════════ */
+.s-problem .sl-body { inset: 78px 72px 64px; }
+.s-problem .prob-cards {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  margin-top: 20px;
+}
+.s-problem .prob-card {
+  background: var(--oat-deep); border-top: 2px solid var(--persimmon);
+  padding: 20px 18px 18px; display: flex; flex-direction: column; gap: 9px;
+}
+.s-problem .prob-card-title {
+  font-family: var(--f-display); font-variation-settings: "opsz" 72;
+  font-weight: 500; font-size: 19px; line-height: 1.2;
+  letter-spacing: -0.01em; color: var(--ink);
+}
+.s-problem .prob-card-body {
+  font-family: var(--f-body); font-size: 12.5px;
+  line-height: 1.55; color: var(--stone);
+}
+
+/* ══════════════════════════════════════════════
+   SLIDE 04 — THE APPROACH
+══════════════════════════════════════════════ */
+.s-approach { background: var(--ink); color: var(--oat); }
+.s-approach .ap-list {
+  display: flex; flex-direction: column; margin-top: 28px; flex: 1;
+}
+.s-approach .ap-row {
+  display: grid; grid-template-columns: 64px 220px 1fr; gap: 0;
+  padding: 20px 0; border-top: 1px solid rgba(244,239,230,.12);
+  align-items: start;
+}
+.s-approach .ap-row:last-child { border-bottom: 1px solid rgba(244,239,230,.12); }
+.s-approach .ap-num {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em;
+  color: var(--persimmon); padding-top: 3px;
+}
+.s-approach .ap-title {
+  font-family: var(--f-display); font-variation-settings: "opsz" 72;
+  font-weight: 500; font-size: 20px; line-height: 1.2;
+  letter-spacing: -0.01em; color: var(--oat); padding-right: 24px;
+}
+.s-approach .ap-desc {
+  font-family: var(--f-body); font-size: 13.5px;
+  line-height: 1.6; color: rgba(244,239,230,.68); max-width: 50ch;
+  padding-top: 3px;
+}
+
+/* ══════════════════════════════════════════════
+   SLIDE 05 — FLAGSHIP WORKFLOW
+══════════════════════════════════════════════ */
+.s-workflow .sl-body { inset: 80px 72px 64px; }
+.s-workflow .flow-steps {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+  margin-top: 20px;
+}
+.s-workflow .flow-step {
+  background: var(--oat-deep); padding: 18px 16px 16px;
+  display: flex; flex-direction: column; gap: 9px;
+}
+.s-workflow .flow-step.hl { background: var(--persimmon); }
+.s-workflow .flow-num {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--ink); color: var(--oat);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--f-mono); font-size: 11px; flex-shrink: 0;
+}
+.s-workflow .flow-step.hl .flow-num { background: rgba(0,0,0,.22); color: #fff; }
+.s-workflow .flow-name {
+  font-family: var(--f-display); font-variation-settings: "opsz" 72;
+  font-weight: 500; font-size: 19px; letter-spacing: -0.01em;
+  color: var(--ink); line-height: 1.2;
+}
+.s-workflow .flow-step.hl .flow-name { color: #fff; }
+.s-workflow .flow-desc {
+  font-family: var(--f-body); font-size: 12px; line-height: 1.5; color: var(--stone);
+}
+.s-workflow .flow-step.hl .flow-desc { color: rgba(255,255,255,.82); }
+.s-workflow .flow-result {
+  background: var(--oat-deep); border-left: 2px solid var(--persimmon);
+  padding: 13px 18px; margin-top: 14px;
+  font-family: var(--f-body); font-size: 13px; line-height: 1.55; color: var(--ink-soft);
+}
+.s-workflow .flow-result b { color: var(--persimmon-deep); font-weight: 600; }
+
+/* ══════════════════════════════════════════════
+   SLIDE 06 — CHANGE ORDERS
+══════════════════════════════════════════════ */
+.s-changeorders .co-diagram {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 14px; flex: 1;
+}
+.s-changeorders .co-paths-list {
+  display: flex; flex-direction: column; justify-content: space-between;
+  height: 104px; flex-shrink: 0;
+}
+.s-changeorders .co-path-item { display: flex; flex-direction: column; gap: 2px; }
+.s-changeorders .cp-name {
+  font-family: var(--f-mono); font-size: 9.5px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(244,239,230,.88); display: block;
+}
+.s-changeorders .cp-desc {
+  font-family: var(--f-body); font-size: 11px; color: rgba(244,239,230,.48);
+  display: block; line-height: 1.35;
+}
+.s-changeorders .co-lines { flex-shrink: 0; display: flex; align-items: center; }
+.s-changeorders .co-result {
+  display: flex; flex-direction: column; gap: 5px; padding-left: 6px;
+}
+.s-changeorders .cr-main {
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--persimmon); display: block; line-height: 1.45;
+}
+.s-changeorders .cr-sub {
+  font-family: var(--f-body); font-size: 11px; color: rgba(244,239,230,.48);
+  display: block; line-height: 1.45;
+}
+.s-changeorders .sl-body { inset: 78px 72px 64px; }
+.s-changeorders .co-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  margin-top: 18px; flex: 1; align-items: start;
+}
+.s-changeorders .co-before {
+  background: var(--oat-deep); border: 1px solid var(--rule); padding: 22px 20px;
+}
+.s-changeorders .co-after {
+  background: var(--ink); border-left: 3px solid var(--persimmon); padding: 22px 20px;
+}
+.s-changeorders .co-label {
+  font-family: var(--f-mono); font-size: 10px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--stone); margin-bottom: 10px;
+}
+.s-changeorders .co-after .co-label { color: var(--persimmon); }
+.s-changeorders .co-head {
+  font-family: var(--f-display); font-variation-settings: "opsz" 72;
+  font-weight: 500; font-size: 22px; letter-spacing: -0.01em;
+  color: var(--ink); margin-bottom: 14px; line-height: 1.18;
+}
+.s-changeorders .co-after .co-head { color: var(--oat); }
+.s-changeorders .co-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.s-changeorders .co-list li {
+  font-family: var(--f-body); font-size: 13px; line-height: 1.5;
+  color: var(--stone); display: flex; gap: 10px; align-items: baseline;
+}
+.s-changeorders .co-after .co-list li { color: rgba(244,239,230,.75); }
+.s-changeorders .co-list li::before { content: "·"; color: var(--stone); flex-shrink: 0; }
+.s-changeorders .co-after .co-list li::before { color: var(--persimmon); }
+
+/* ══════════════════════════════════════════════
+   SLIDE 07 — THE STACK
+══════════════════════════════════════════════ */
+.s-stack .stack-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+  margin-top: 18px;
+}
+.s-stack .tool-card {
+  background: var(--oat-deep); padding: 18px 16px 14px;
+  display: flex; flex-direction: column; gap: 7px;
+}
+.s-stack .tool-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--persimmon); flex-shrink: 0;
+}
+.s-stack .tool-name {
+  font-family: var(--f-display); font-variation-settings: "opsz" 72;
+  font-weight: 500; font-size: 17px; letter-spacing: -0.01em;
+  color: var(--ink); line-height: 1.2;
+}
+.s-stack .tool-role {
+  font-family: var(--f-body); font-size: 12px; line-height: 1.45; color: var(--stone);
+}
+
+/* ══════════════════════════════════════════════
+   SLIDE 08 — CTA
+══════════════════════════════════════════════ */
+.s-cta { background: var(--ink); color: var(--oat); }
+.s-cta .cta-center {
+  position: absolute; inset: 0; z-index: 5;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 80px 140px;
+}
+.s-cta .cta-mark {
+  font-family: var(--f-display); font-weight: 500;
+  font-size: 24px; letter-spacing: -0.01em; color: var(--oat);
+  font-variation-settings: "opsz" 144; margin-bottom: 28px;
+  display: inline-flex; align-items: baseline;
+}
+.s-cta .cta-mark .dot { background: var(--persimmon); }
+.s-cta .cta-title {
+  font-family: var(--f-display); font-weight: 400;
+  font-size: 60px; line-height: 1.06; letter-spacing: -0.025em;
+  color: var(--oat); font-optical-sizing: auto;
+  font-variation-settings: "opsz" 144; max-width: 14ch;
+  text-wrap: balance; margin-bottom: 18px;
+}
+.s-cta .cta-sub {
+  font-family: var(--f-body); font-size: 16px; line-height: 1.55;
+  color: rgba(244,239,230,.68); max-width: 44ch; margin-bottom: 32px;
+}
+.s-cta .cta-btn {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 14px 26px; background: var(--persimmon); color: #fff;
+  font-family: var(--f-body); font-weight: 500; font-size: 14px;
+  text-decoration: none; letter-spacing: 0.01em;
+  transition: background 200ms var(--ease);
+}
+.s-cta .cta-btn:hover { background: var(--persimmon-deep); }
+
+/* ── Nav overlay ── */
+.nav-bar {
+  position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(0,0,0,.82); border-radius: 999px; padding: 4px 6px;
+  z-index: 1000; opacity: 0; transition: opacity 280ms ease;
+}
+.nav-bar.show { opacity: 1; }
+.nav-btn {
+  appearance: none; background: transparent; border: 0;
+  color: rgba(255,255,255,.65); cursor: pointer;
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; transition: background 140ms, color 140ms;
+}
+.nav-btn:hover { background: rgba(255,255,255,.12); color: #fff; }
+.nav-count {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em;
+  color: #fff; padding: 0 8px; font-variant-numeric: tabular-nums;
+}
+.nav-sep { color: rgba(255,255,255,.35); margin: 0 2px; }
+
+@media print {
+  @page { size: 1280px 720px; margin: 0; }
+  html, body { overflow: visible; background: #fff; width: 1280px; height: auto; }
+  .stage { position: static; display: block; }
+  .canvas { position: static; width: 1280px; height: auto; transform: none !important; }
+  .slide {
+    position: relative !important;
+    display: block !important;
+    width: 1280px;
+    height: 720px;
+    page-break-after: always;
+    break-after: page;
+    overflow: hidden;
+  }
+  .slide:last-child { page-break-after: avoid; break-after: avoid; }
+  .nav-bar { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+<div class="canvas" id="canvas">
+
+<!-- ════════════════════════════════════════
+     01 / COVER
+════════════════════════════════════════ -->
+<div class="slide s-cover active" id="s1">
+  <!-- blobs -->
+  <svg class="blob" style="right:-160px;top:-80px;width:580px;height:440px;" viewBox="0 0 580 440" preserveAspectRatio="none" aria-hidden="true">
+    <defs><filter id="b1a" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="24"/></filter></defs>
+    <path filter="url(#b1a)" fill="#D96833" opacity="0.22" d="M100,200 C180,90 380,110 500,170 C600,220 580,350 440,365 C280,382 140,360 100,295 C60,248 50,264 100,200 Z"/>
+  </svg>
+  <svg class="blob" style="left:-180px;bottom:-120px;width:520px;height:400px;" viewBox="0 0 520 400" preserveAspectRatio="none" aria-hidden="true">
+    <defs><filter id="b1b" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="20"/></filter></defs>
+    <path filter="url(#b1b)" fill="#F4EFE6" opacity="0.06" d="M80,200 C140,110 300,90 420,150 C510,200 490,330 350,350 C220,368 90,340 70,275 C50,230 50,250 80,200 Z"/>
+  </svg>
+
+  <div class="sl-head">
+    <span class="t-mono" style="color:rgba(244,239,230,.4);">JMG &nbsp;·&nbsp; Case Study &nbsp;·&nbsp; 2026</span>
+    <span class="slide-mark">JMG<span class="dot"></span></span>
+  </div>
+
+  <div class="cover-body">
+    <span class="t-stamp cover-client">PureSteel Construction Inc.</span>
+    <h1 class="t-display cover-title">Eight hours of paperwork,<br>reduced to a single click<span class="dot"></span></h1>
+    <p class="cover-lede">How a Dallas steel contractor replaced manual subcontract agreements, change orders, and filing with a suite of approval-driven automations, without giving up control.</p>
+  </div>
+
+  <div class="sl-foot">
+    <span>Prepared by JMG</span>
+    <span>gonzalezjuanm.com</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     02 / THE CLIENT
+════════════════════════════════════════ -->
+<div class="slide s-client" id="s2">
+  <svg class="blob" style="right:-200px;top:40px;width:500px;height:380px;" viewBox="0 0 500 380" preserveAspectRatio="none" aria-hidden="true">
+    <defs><filter id="b2a" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="22"/></filter></defs>
+    <path filter="url(#b2a)" fill="#D96833" opacity="0.10" d="M80,190 C160,90 300,110 420,170 C510,220 490,340 350,358 C210,374 80,338 60,272 C40,225 40,244 80,190 Z"/>
+  </svg>
+
+  <div class="sl-head">
+    <img src="../../assets/logo-primary.svg" class="sl-logo" alt="JMG">
+    <span>01 &nbsp;/&nbsp; The Client</span>
+  </div>
+
+  <div class="sl-body">
+    <div class="t-mono" style="margin-bottom:14px;">01 &nbsp;/&nbsp; The Client</div>
+    <h2 class="t-h1" style="max-width:540px;margin-bottom:22px;">A lean team running steel, one project at a time<span class="dot"></span></h2>
+
+    <div class="client-grid">
+      <div>
+        <p class="t-body" style="max-width:42ch;margin-bottom:13px;"><strong style="color:var(--ink);">PureSteel Construction Inc.</strong> is a structural steel contractor based in Dallas, Texas, owner-led and built around a tight network of subcontractors across multiple active projects at once.</p>
+        <p class="t-body" style="max-width:42ch;">The business runs on a small team and on systematized processes: subcontract agreements, client change orders, document filing, and invoicing. Every approval still passes through the owner.</p>
+      </div>
+      <div class="client-stats">
+        <div class="stat-row">
+          <div class="stat-val">Dallas, TX</div>
+          <div class="stat-key">Headquarters &amp; Operating Region</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-val">Structural steel</div>
+          <div class="stat-key">Specialty Trade</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-val">Multiple, concurrent</div>
+          <div class="stat-key">Active Projects Managed</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-val">Owner-approved</div>
+          <div class="stat-key">Every Document, Every Time</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sl-foot">
+    <span>JMG &nbsp;·&nbsp; Case Study</span>
+    <span>02 &nbsp;/&nbsp; 08</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     03 / THE PROBLEM
+════════════════════════════════════════ -->
+<div class="slide s-problem" id="s3">
+  <div class="sl-head">
+    <img src="../../assets/logo-primary.svg" class="sl-logo" alt="JMG">
+    <span>02 &nbsp;/&nbsp; The Problem</span>
+  </div>
+
+  <div class="sl-body">
+    <div class="t-mono" style="margin-bottom:10px;">02 &nbsp;/&nbsp; The Problem</div>
+    <h2 class="t-h2" style="margin-bottom:7px;">Every agreement was built by hand<span class="dot"></span></h2>
+    <p class="t-body" style="margin-bottom:0;max-width:76ch;font-size:13.5px;">Before automation, the back office absorbed hours of repetitive work for every job and every change.</p>
+
+    <div class="prob-cards">
+      <div class="prob-card">
+        <div class="prob-card-title">Manual documents</div>
+        <p class="prob-card-body">Subcontract agreements and change orders prepared one at a time in Word or PDF.</p>
+      </div>
+      <div class="prob-card">
+        <div class="prob-card-title">Chasing approvals</div>
+        <p class="prob-card-body">Emailing and phoning subs and clients, then tracking who had signed and who hadn't.</p>
+      </div>
+      <div class="prob-card">
+        <div class="prob-card-title">Hand-filing</div>
+        <p class="prob-card-body">Saving completed, signed documents into the right project folder by hand.</p>
+      </div>
+      <div class="prob-card">
+        <div class="prob-card-title">No single source</div>
+        <p class="prob-card-body">Project, client, and contact details scattered across spreadsheets, re-entered on every document instead of looked up once.</p>
+      </div>
+    </div>
+
+    <p class="t-italic" style="margin-top:18px;">The work got done, but it scaled with hours, not systems.</p>
+  </div>
+
+  <div class="sl-foot">
+    <span>JMG &nbsp;·&nbsp; Case Study</span>
+    <span>03 &nbsp;/&nbsp; 08</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     04 / THE APPROACH
+════════════════════════════════════════ -->
+<div class="slide slide--dark s-approach" id="s4">
+  <svg class="blob" style="left:-160px;top:-60px;width:520px;height:400px;" viewBox="0 0 520 400" preserveAspectRatio="none" aria-hidden="true">
+    <defs><filter id="b4a" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="22"/></filter></defs>
+    <path filter="url(#b4a)" fill="#D96833" opacity="0.14" d="M80,200 C160,100 300,120 420,180 C500,230 480,340 340,360 C200,375 80,340 60,280 C40,230 40,250 80,200 Z"/>
+  </svg>
+  <svg class="blob" style="right:-200px;bottom:-120px;width:560px;height:420px;" viewBox="0 0 560 420" preserveAspectRatio="none" aria-hidden="true">
+    <defs><filter id="b4b" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="20"/></filter></defs>
+    <path filter="url(#b4b)" fill="#F4EFE6" opacity="0.04" d="M100,200 C180,100 340,120 460,180 C540,230 520,340 380,360 C240,376 100,340 80,278 C60,228 60,248 100,200 Z"/>
+  </svg>
+
+  <div class="sl-head">
+    <span class="slide-mark">JMG<span class="dot"></span></span>
+    <span>03 &nbsp;/&nbsp; The Approach</span>
+  </div>
+
+  <div class="sl-body">
+    <div class="t-mono" style="margin-bottom:12px;">03 &nbsp;/&nbsp; The Approach</div>
+    <h2 class="t-h2" style="color:var(--oat);max-width:600px;margin-bottom:0;">Observe once. Automate once. Keep the owner in control<span class="dot"></span></h2>
+
+    <div class="ap-list">
+      <div class="ap-row">
+        <span class="ap-num">01</span>
+        <span class="ap-title">Owner stays in control</span>
+        <p class="ap-desc">No document reaches a client or subcontractor without the owner's explicit signoff. Approvals happen with a single click in email.</p>
+      </div>
+      <div class="ap-row">
+        <span class="ap-num">02</span>
+        <span class="ap-title">One source of truth</span>
+        <p class="ap-desc">Google Sheets drive every lookup. Add a client or PO once; every workflow sees it. No duplicated data in forms.</p>
+      </div>
+      <div class="ap-row">
+        <span class="ap-num">03</span>
+        <span class="ap-title">Modular workflows</span>
+        <p class="ap-desc">Document generation and file storage are always separate, swappable building blocks, easy to maintain and extend.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sl-foot">
+    <span>JMG &nbsp;·&nbsp; Case Study</span>
+    <span>04 &nbsp;/&nbsp; 08</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     05 / FLAGSHIP WORKFLOW
+════════════════════════════════════════ -->
+<div class="slide s-workflow" id="s5">
+  <svg class="blob" style="right:-180px;bottom:-120px;width:540px;height:420px;" viewBox="0 0 540 420" preserveAspectRatio="none" aria-hidden="true">
+    <defs><filter id="b5a" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="22"/></filter></defs>
+    <path filter="url(#b5a)" fill="#1F1A14" opacity="0.06" d="M100,210 C180,100 360,120 480,180 C560,230 540,360 400,378 C260,394 100,358 80,286 C58,230 60,252 100,210 Z"/>
+  </svg>
+
+  <div class="sl-head">
+    <img src="../../assets/logo-primary.svg" class="sl-logo" alt="JMG">
+    <span>04 &nbsp;/&nbsp; Subcontract Agreements</span>
+  </div>
+
+  <div class="sl-body">
+    <div class="t-mono" style="margin-bottom:9px;">04 &nbsp;/&nbsp; Subcontract Agreements</div>
+    <h2 class="t-h2" style="margin-bottom:7px;">The full subcontract workflow, automated<span class="dot"></span></h2>
+    <p class="t-body" style="font-size:13px;max-width:78ch;">The owner submits one form. The system generates a fully populated agreement, routes it for signature, and files the signed copy automatically.</p>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div class="flow-name">Submit</div>
+        <p class="flow-desc">The owner fills a custom form with the new subcontractor's job details.</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div class="flow-name">Generate</div>
+        <p class="flow-desc">n8n populates the agreement template, pulling client and project names from across your spreadsheets.</p>
+      </div>
+      <div class="flow-step hl">
+        <div class="flow-num">3</div>
+        <div class="flow-name">Approve</div>
+        <p class="flow-desc">DocuSeal sends the owner an automated signature request. He reviews it, signs, and only then does it move forward.</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <div class="flow-name">E-sign</div>
+        <p class="flow-desc">DocuSeal routes the executed agreement to one or more subcontractors on the job for their signature.</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">5</div>
+        <div class="flow-name">File</div>
+        <p class="flow-desc">The signed PDF is auto-filed into the correct Shared Drive project folder.</p>
+      </div>
+    </div>
+
+    <div class="flow-result">
+      <b>The result:</b> hours of manual document prep eliminated. The owner's signature is always first in the chain, built into the workflow rather than left to follow-up.
+    </div>
+  </div>
+
+  <div class="sl-foot">
+    <span>JMG &nbsp;·&nbsp; Case Study</span>
+    <span>05 &nbsp;/&nbsp; 08</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     06 / CHANGE ORDERS
+════════════════════════════════════════ -->
+<div class="slide s-changeorders" id="s6">
+  <div class="sl-head">
+    <img src="../../assets/logo-primary.svg" class="sl-logo" alt="JMG">
+    <span>05 &nbsp;/&nbsp; Change Orders</span>
+  </div>
+
+  <div class="sl-body">
+    <div class="t-mono" style="margin-bottom:9px;">05 &nbsp;/&nbsp; Change Orders</div>
+    <h2 class="t-h2" style="margin-bottom:7px;">The full change-order lifecycle, handled<span class="dot"></span></h2>
+    <p class="t-body" style="font-size:13px;max-width:76ch;">One form triggers the full workflow. Smart routing decides who signs, then e-signature and filing happen on their own.</p>
+
+    <div class="co-grid">
+      <div class="co-before">
+        <div class="co-label">Before</div>
+        <div class="co-head">Fully manual</div>
+        <ul class="co-list">
+          <li>Prepare CO documents by hand</li>
+          <li>Email and call for approvals</li>
+          <li>Track signature status manually</li>
+          <li>File completed documents by hand</li>
+        </ul>
+      </div>
+      <div class="co-after">
+        <div class="co-label">After</div>
+        <div class="co-head">One form, three smart paths</div>
+        <div class="co-diagram">
+          <div class="co-paths-list">
+            <div class="co-path-item">
+              <span class="cp-name">Subcontractor only</span>
+              <span class="cp-desc">Sub signs</span>
+            </div>
+            <div class="co-path-item">
+              <span class="cp-name">Client only</span>
+              <span class="cp-desc">Supervisor approves or declines, then signs</span>
+            </div>
+            <div class="co-path-item">
+              <span class="cp-name">Both</span>
+              <span class="cp-desc">Routed to sub and client supervisor</span>
+            </div>
+          </div>
+          <div class="co-lines">
+            <svg viewBox="0 0 130 104" width="110" height="104" overflow="visible" aria-hidden="true">
+              <path d="M0,16 C65,16 75,52 110,52" fill="none" stroke="rgba(244,239,230,0.28)" stroke-width="1"/>
+              <path d="M0,52 L110,52" fill="none" stroke="rgba(244,239,230,0.28)" stroke-width="1"/>
+              <path d="M0,88 C65,88 75,52 110,52" fill="none" stroke="rgba(244,239,230,0.28)" stroke-width="1"/>
+              <path d="M110,52 L124,52" fill="none" stroke="#D96833" stroke-width="1.4"/>
+              <circle cx="110" cy="52" r="4.5" fill="#D96833"/>
+            </svg>
+          </div>
+          <div class="co-result">
+            <span class="cr-main">Approve or Decline<br>by email</span>
+            <span class="cr-sub">Auto-filed on completion</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="sl-foot">
+    <span>JMG &nbsp;·&nbsp; Case Study</span>
+    <span>06 &nbsp;/&nbsp; 08</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     07 / THE STACK
+════════════════════════════════════════ -->
+<div class="slide s-stack" id="s7">
+  <div class="sl-head">
+    <img src="../../assets/logo-primary.svg" class="sl-logo" alt="JMG">
+    <span>06 &nbsp;/&nbsp; The Stack</span>
+  </div>
+
+  <div class="sl-body">
+    <div class="t-mono" style="margin-bottom:9px;">06 &nbsp;/&nbsp; The Stack</div>
+    <h2 class="t-h2" style="margin-bottom:7px;">Best-in-class tools, wired together<span class="dot"></span></h2>
+    <p class="t-body" style="font-size:13px;max-width:64ch;">Best-in-class tools, wired together. Yours to own and operate, or kept running by JMG.</p>
+
+    <div class="stack-grid">
+      <div class="tool-card">
+        <div class="tool-dot"></div>
+        <div class="tool-name">n8n Cloud</div>
+        <div class="tool-role">Workflow automation engine</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-dot"></div>
+        <div class="tool-name">Netlify</div>
+        <div class="tool-role">Custom forms &amp; serverless backend</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-dot"></div>
+        <div class="tool-name">Google Workspace</div>
+        <div class="tool-role">Gmail, Sheets &amp; Shared Drive</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-dot"></div>
+        <div class="tool-name">DocuSeal</div>
+        <div class="tool-role">E-signature collection</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-dot"></div>
+        <div class="tool-name">QuickBooks Online</div>
+        <div class="tool-role">Estimates &amp; invoicing</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-dot"></div>
+        <div class="tool-name">Cloudinary</div>
+        <div class="tool-role">Document template hosting</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-dot"></div>
+        <div class="tool-name">Gemini API</div>
+        <div class="tool-role">AI-assisted document formatting</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-dot"></div>
+        <div class="tool-name">Claude Code</div>
+        <div class="tool-role">AI-assisted build &amp; maintenance</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sl-foot">
+    <span>JMG &nbsp;·&nbsp; Case Study</span>
+    <span>07 &nbsp;/&nbsp; 08</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     08 / CTA
+════════════════════════════════════════ -->
+<div class="slide slide--dark s-cta" id="s8">
+  <svg class="blob" style="right:-160px;top:-80px;width:560px;height:440px;" viewBox="0 0 560 440" preserveAspectRatio="none" aria-hidden="true">
+    <defs><filter id="b8a" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="26"/></filter></defs>
+    <path filter="url(#b8a)" fill="#D96833" opacity="0.20" d="M100,200 C180,90 380,110 500,170 C600,220 580,350 440,368 C280,384 120,360 90,290 C60,240 60,260 100,200 Z"/>
+  </svg>
+  <svg class="blob" style="left:-160px;bottom:-100px;width:500px;height:400px;" viewBox="0 0 500 400" preserveAspectRatio="none" aria-hidden="true">
+    <defs><filter id="b8b" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="20"/></filter></defs>
+    <path filter="url(#b8b)" fill="#F4EFE6" opacity="0.05" d="M80,200 C140,110 300,90 420,150 C510,200 490,340 350,358 C210,374 80,338 60,270 C40,226 42,248 80,200 Z"/>
+  </svg>
+
+  <div class="sl-head">
+    <span class="t-mono" style="color:rgba(244,239,230,.35);">JMG &nbsp;·&nbsp; Case Study &nbsp;·&nbsp; 2026</span>
+    <span class="t-mono" style="color:rgba(244,239,230,.35);">gonzalezjuanm.com</span>
+  </div>
+
+  <div class="cta-center">
+    <div class="cta-mark">JMG<span class="dot"></span></div>
+    <h2 class="cta-title">Operations that quietly do their job.</h2>
+    <p class="cta-sub">Let's find the eight hours hiding in your back office.</p>
+    <a href="/#contact" class="cta-btn">Start a conversation &nbsp;&rarr;</a>
+  </div>
+
+  <div class="sl-foot">
+    <span>JMG</span>
+    <span>08 &nbsp;/&nbsp; 08</span>
+  </div>
+</div>
+
+</div><!-- /canvas -->
+</div><!-- /stage -->
+
+<!-- Nav -->
+<div class="nav-bar" id="nav">
+  <button class="nav-btn" id="prevBtn" aria-label="Previous slide">&#8592;</button>
+  <span class="nav-count"><span id="cur">1</span><span class="nav-sep">&thinsp;/&thinsp;</span>8</span>
+  <button class="nav-btn" id="nextBtn" aria-label="Next slide">&#8594;</button>
+</div>
+
+<script>
+(function(){
+  var N = 8, idx = 0;
+  var slides = [];
+  for(var i=1;i<=N;i++) slides.push(document.getElementById('s'+i));
+  var nav = document.getElementById('nav');
+  var cur = document.getElementById('cur');
+  var hideT = null;
+
+  function show(){
+    nav.classList.add('show');
+    clearTimeout(hideT);
+    hideT = setTimeout(function(){ nav.classList.remove('show'); }, 2200);
+  }
+
+  function go(n){
+    slides[idx].classList.remove('active');
+    idx = Math.max(0, Math.min(N-1, n));
+    slides[idx].classList.add('active');
+    cur.textContent = idx+1;
+    show();
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', function(e){ e.stopPropagation(); if(idx>0) go(idx-1); });
+  document.getElementById('nextBtn').addEventListener('click', function(e){ e.stopPropagation(); if(idx<N-1) go(idx+1); });
+
+  document.addEventListener('keydown', function(e){
+    if(/INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){ e.preventDefault(); if(idx<N-1) go(idx+1); }
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); if(idx>0) go(idx-1); }
+    else if(e.key==='Home'){ e.preventDefault(); go(0); }
+    else if(e.key==='End'){ e.preventDefault(); go(N-1); }
+  });
+
+  // Click right half to advance, left to go back
+  document.getElementById('canvas').addEventListener('click', function(e){
+    if(e.target.closest('.nav-btn')) return;
+    var r = this.getBoundingClientRect();
+    var x = e.clientX - r.left;
+    if(x > r.width * 0.5){ if(idx<N-1) go(idx+1); }
+    else { if(idx>0) go(idx-1); }
+  });
+
+  // Touch swipe
+  var tx0 = null;
+  document.addEventListener('touchstart', function(e){ tx0 = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if(tx0===null) return;
+    var dx = e.changedTouches[0].clientX - tx0;
+    if(Math.abs(dx)>40){ if(dx<0&&idx<N-1) go(idx+1); else if(dx>0&&idx>0) go(idx-1); }
+    tx0 = null;
+  }, {passive:true});
+
+  // Scale to fit
+  function fit(){
+    var s = Math.min(window.innerWidth/1280, window.innerHeight/720);
+    document.getElementById('canvas').style.transform = 'scale('+s+')';
+  }
+  fit();
+  window.addEventListener('resize', fit);
+
+  document.addEventListener('mousemove', show);
+})();
+</script>
+</body>
+</html>

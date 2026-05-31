@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light only" />
+<meta name="supported-color-schemes" content="light" />
+<title>Case Study — PureSteel Construction Inc. · JMG</title>
+<meta name="description" content="How PureSteel Construction Inc. went from manual copy-paste contract work to a fully automated onboarding-to-filing pipeline, saving 15–17 hours a month." />
+<link rel="icon" href="../../assets/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    color-scheme: light only;
+    --oat:            #F4EFE6;
+    --oat-deep:       #EDE5D5;
+    --ink:            #1F1A14;
+    --ink-soft:       #2A241C;
+    --stone:          #5C544A;
+    --rule:           #D9D2C5;
+    --persimmon:      #D96833;
+    --persimmon-deep: #C25729;
+    --f-display: "Fraunces", Georgia, serif;
+    --f-body:    "Inter", system-ui, sans-serif;
+    --f-mono:    "JetBrains Mono", ui-monospace, monospace;
+    --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+    --container-max: 1240px;
+    --container-pad: 56px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+  body {
+    font-family: var(--f-body);
+    background: var(--oat);
+    color: var(--ink);
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Paper grain */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    opacity: .45; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12  0 0 0 0 0.10  0 0 0 0 0.08  0 0 0 0.11 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+  body > * { position: relative; z-index: 2; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ── Nav ─────────────────────────────────────────────── */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--oat);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav .inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 22px var(--container-pad);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+  .nav .nav-logo { display: block; line-height: 0; }
+  .nav .nav-logo img { height: 32px; width: auto; display: block; }
+  .nav .nav-back {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--stone);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 200ms var(--ease);
+    margin-right: auto;
+    margin-left: 32px;
+  }
+  .nav .nav-back::before {
+    content: "←";
+    font-size: 13px;
+    color: var(--persimmon);
+    transition: transform 200ms var(--ease);
+  }
+  .nav .nav-back:hover { color: var(--ink); }
+  .nav .nav-back:hover::before { transform: translateX(-3px); }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 22px;
+    font-family: var(--f-body);
+    font-weight: 500;
+    font-size: 15px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 200ms var(--ease), color 200ms var(--ease), transform 120ms var(--ease);
+    text-decoration: none;
+    line-height: 1;
+  }
+  .btn .arr { font-family: var(--f-mono); font-size: 13px; }
+  .btn-primary { background: var(--persimmon); color: #fff; }
+  .btn-primary:hover { background: var(--persimmon-deep); }
+  .btn-primary:active { transform: translateY(1px); }
+  @media (max-width: 560px) {
+    .nav .inner { padding: 18px 20px; }
+    .btn-primary { display: none; }
+    .nav .nav-back { margin-left: 20px; }
+  }
+
+  /* ── Page blobs ─────────────────────────────────────── */
+  .page-blobs {
+    position: absolute; inset: 0; pointer-events: none; z-index: 1; overflow: hidden;
+  }
+  .page-blobs svg { position: absolute; display: block; }
+  @keyframes washDrift {
+    0%,100% { transform: translate(0,0) scale(1) rotate(0deg); }
+    50%      { transform: translate(-12px,8px) scale(1.04) rotate(-1.2deg); }
+  }
+  .page-blobs svg { animation: washDrift 28s ease-in-out infinite; }
+  .pb-c { left:-260px; top:30%; width:620px; height:440px; opacity:.85; animation-delay:-12s; animation-duration:26s; }
+  .pb-d { right:-240px; top:44%; width:700px; height:460px; opacity:.95; animation-delay:-4s; animation-duration:30s; }
+  .pb-g { left:-220px; top:80%; width:600px; height:560px; opacity:.95; animation-delay:-3s; animation-duration:34s; }
+  .pb-h { right:-160px; top:92%; width:460px; height:360px; opacity:.85; animation-delay:-11s; }
+
+  /* ── Case study hero ───────────────────────────────── */
+  .cs-hero {
+    background: var(--oat);
+    color: var(--ink);
+    padding: 46px 18px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Download band — full-bleed oat-deep strip anchored to the stat bar */
+  .cta-band {
+    background: var(--oat-deep);
+    border-top: 1px solid var(--rule);
+    position: relative; z-index: 2;
+    margin: 32px -18px 0;
+  }
+  .cta-band .cta-inner {
+    max-width: 600px; margin: 0 auto; padding: 20px 18px;
+    display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  }
+  .cta-band .txt .t {
+    font-family: var(--f-display); font-variation-settings: "opsz" 72;
+    font-weight: 500; font-size: 18px; letter-spacing: -.01em;
+    color: var(--ink); line-height: 1.15;
+  }
+  .cta-band .txt .s {
+    font-family: var(--f-mono); font-size: 10px; letter-spacing: .13em;
+    text-transform: uppercase; color: var(--stone); margin-top: 6px;
+    white-space: nowrap;
+  }
+  .cta-band .dl {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center;
+    background: var(--persimmon); color: var(--oat);
+    font-family: var(--f-body); font-weight: 600; font-size: 14px; letter-spacing: .005em;
+    padding: 13px 24px; text-decoration: none; cursor: pointer; white-space: nowrap;
+    transition: background .3s ease, transform .3s ease;
+  }
+  .cta-band .dl:hover { background: var(--persimmon-deep); transform: translateY(-1px); }
+  @media (max-width: 420px) {
+    .cta-band .cta-inner { flex-direction: column; align-items: stretch; gap: 16px; }
+    .cta-band .dl { justify-content: center; }
+  }
+  .cs-hero .inner { max-width: 600px; margin: 0 auto; position: relative; z-index: 2; }
+  .cs-hero .ink-wash {
+    position: absolute; z-index: 0; pointer-events: none;
+    animation: washDrift 18s ease-in-out infinite;
+    transform-origin: 60% 50%;
+  }
+  .cs-hero .ink-wash.iw-orange { right:-220px; top:-140px; width:960px; height:640px; opacity:.85; }
+  .cs-hero .ink-wash.iw-ink    { left:-220px; bottom:-260px; width:820px; height:540px; opacity:1; animation-delay:-6s; animation-duration:24s; }
+  @media (max-width:880px) {
+    .cs-hero .ink-wash.iw-orange { width:640px; height:440px; right:-180px; top:-110px; }
+    .cs-hero .ink-wash.iw-ink    { width:560px; height:380px; left:-180px; bottom:-180px; }
+  }
+  @media (max-width:560px) {
+    .cs-hero .ink-wash.iw-orange { width:460px; height:320px; right:-140px; top:-80px; }
+    .cs-hero .ink-wash.iw-ink    { width:420px; height:280px; left:-140px; bottom:-140px; }
+  }
+  .toplabels { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:26px; }
+  .mono-label {
+    font-family: var(--f-mono); font-size:11px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--stone);
+  }
+  .mono-label.stamp { color:var(--persimmon-deep); display:inline-flex; align-items:center; gap:8px; }
+  .mono-label.stamp::before {
+    content:""; width:7px; height:7px; border-radius:50%; background:var(--persimmon);
+    animation: dotPulse 3.6s ease-in-out infinite;
+  }
+  @keyframes dotPulse {
+    0%,100% { transform:scale(1); box-shadow:0 0 0 0 rgba(217,104,51,0); }
+    50%     { transform:scale(1.18); box-shadow:0 0 0 4px rgba(217,104,51,.12); }
+  }
+  .cs-hero h1 {
+    font-family: var(--f-display); font-variation-settings:"opsz" 144;
+    font-weight:400; font-size:34px; line-height:1.05; letter-spacing:-.02em; text-wrap:balance;
+  }
+  .cs-hero .lede {
+    margin-top:16px; font-size:15px; color:var(--ink-soft); font-weight:400; max-width:96%; line-height:1.6;
+  }
+  .cs-hero .client {
+    margin-top:20px; font-family:var(--f-mono); font-size:11px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--stone);
+  }
+
+  /* ── Stat bar ─────────────────────────────────────── */
+  .stat-bar {
+    background: var(--ink);
+    display: flex; justify-content:center; text-align:center;
+    gap: clamp(28px,9vw,64px);
+    padding: 22px 12px; position:relative; z-index:2; overflow:hidden;
+  }
+  .stat-bar::before {
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background: radial-gradient(ellipse at 50% 50%, rgba(217,104,51,.10), transparent 65%);
+    opacity:0; transition:opacity 1.2s ease;
+  }
+  .stat-bar.stats-live::before { opacity:1; }
+  .stat-bar .stat { position:relative; z-index:1; }
+  .stat-bar .stat .num {
+    font-family: var(--f-display); font-variation-settings:"opsz" 100; font-weight:500; font-size:26px;
+    color: var(--persimmon); line-height:1; letter-spacing:-.01em;
+    display:inline-block; font-variant-numeric:tabular-nums;
+  }
+  .stat-bar .stat .lbl {
+    font-family: var(--f-mono); font-size:9px; letter-spacing:.14em; text-transform:uppercase;
+    color: rgba(244,239,230,.6); margin-top:8px;
+    opacity:0; transform:translateY(4px);
+    transition: opacity .6s ease .15s, transform .6s ease .15s;
+  }
+  .stat-bar.stats-live .stat .lbl { opacity:1; transform:none; }
+
+  /* ── Content wrap ─────────────────────────────────── */
+  .wrap { max-width:600px; margin:0 auto; padding:0 18px; position:relative; z-index:2; }
+
+  .intro { margin-top:30px; font-size:15px; color:var(--ink-soft); line-height:1.65; }
+  .intro b { color:var(--ink); font-weight:600; }
+
+  .section-label {
+    text-align:left; font-family:var(--f-mono); font-size:11px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--stone); font-weight:400;
+    margin:38px 0 16px; padding-top:16px; border-top:1px solid var(--rule);
+  }
+
+  /* ── Foundation card ──────────────────────────────── */
+  .foundation {
+    background: var(--oat-deep);
+    border: 1px solid var(--persimmon);
+    padding: 22px 20px;
+  }
+  .foundation .tag {
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--f-mono); font-size:11px; font-weight:400; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--persimmon-deep); margin-bottom:12px;
+  }
+  .foundation .tag::before {
+    content:""; width:7px; height:7px; border-radius:50%; background:var(--persimmon);
+    animation: dotPulse 3.6s ease-in-out infinite; animation-delay:.4s;
+  }
+  .foundation h3 {
+    font-family:var(--f-display); font-variation-settings:"opsz" 72;
+    font-weight:500; font-size:24px; letter-spacing:-.01em; color:var(--ink);
+  }
+  .foundation p { font-size:14px; color:var(--ink-soft); margin-top:9px; }
+  .foundation .why {
+    margin-top:14px; font-size:13px; background:var(--oat);
+    border:1px solid var(--rule); padding:12px 14px; color:var(--ink-soft); line-height:1.6;
+  }
+  .foundation .why b { color:var(--persimmon-deep); font-weight:600; }
+  .flow-map { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  .flow-map .src { background:var(--oat); border:1px solid var(--rule); padding:12px 13px; display:flex; flex-direction:column; gap:5px; }
+  .flow-map .src-k { font-family:var(--f-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--persimmon-deep); }
+  .flow-map .src-v { font-family:var(--f-display); font-variation-settings:"opsz" 72; font-weight:500; font-size:16px; letter-spacing:-.01em; color:var(--ink); line-height:1.1; }
+  .flow-map .src-n { font-size:11.5px; line-height:1.45; color:var(--stone); }
+  @media (max-width:380px) { .flow-map { grid-template-columns:1fr; } }
+
+  /* ── Flow connector ───────────────────────────────── */
+  .flow-down {
+    width:1px; height:26px; background:var(--persimmon); margin:0 auto;
+    transform-origin:top center;
+  }
+
+  /* ── Stage cards ──────────────────────────────────── */
+  .stage {
+    background:var(--oat-deep); padding:20px; border-left:2px solid var(--persimmon);
+    position:relative;
+  }
+  .stage.signing { background:var(--ink); border-left-color:var(--persimmon); }
+  .stage .num {
+    font-family:var(--f-mono); font-size:11px; font-weight:400; letter-spacing:.14em;
+    color:var(--stone); text-transform:uppercase;
+  }
+  .stage.signing .num { color:rgba(244,239,230,.6); }
+  .stage h4 {
+    font-family:var(--f-display); font-variation-settings:"opsz" 72;
+    font-weight:500; font-size:21px; letter-spacing:-.01em; color:var(--ink); margin:4px 0 14px;
+  }
+  .stage.signing h4 { color:var(--oat); }
+
+  .ba { display:flex; flex-direction:column; gap:14px; margin-bottom:14px; }
+  .ba .blk .k {
+    font-family:var(--f-mono); font-size:10px; font-weight:400; letter-spacing:.14em;
+    text-transform:uppercase; margin-bottom:6px; display:inline-flex; align-items:center; gap:8px;
+  }
+  .ba .before .k { color:var(--stone); }
+  .ba .before .k::before { content:"\00D7"; font-size:14px; line-height:1; }
+  .ba .after .k { color:var(--persimmon-deep); }
+  .ba .after .k::before {
+    content:""; width:6px; height:6px; border-radius:50%; background:var(--persimmon);
+    animation: dotBreath 4.2s ease-in-out infinite;
+  }
+  @keyframes dotBreath {
+    0%,100% { transform:scale(1); opacity:.85; }
+    50%     { transform:scale(1.25); opacity:1; }
+  }
+  .stage.signing .ba .after .k { color:var(--persimmon); }
+  .ba .v { font-size:13.5px; line-height:1.6; }
+  .ba .before .v { color:var(--stone); }
+  .ba .after .v { color:var(--ink-soft); }
+  .stage.signing .ba .before .k { color:rgba(244,239,230,.55); }
+  .stage.signing .ba .before .v { color:rgba(244,239,230,.7); }
+  .stage.signing .ba .after .v  { color:rgba(244,239,230,.92); }
+
+  .saved {
+    display:flex; align-items:baseline; gap:10px;
+    background:var(--oat); border:1px solid var(--rule);
+    padding:11px 13px; font-size:13px; line-height:1.5; color:var(--ink-soft);
+  }
+  .stage.signing .saved {
+    background:rgba(244,239,230,.10); border-color:rgba(244,239,230,.22); color:rgba(244,239,230,.92);
+  }
+  .saved .mk {
+    font-family:var(--f-mono); font-size:10px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--persimmon-deep); flex-shrink:0; padding-top:1px;
+  }
+  .stage.signing .saved .mk { color:var(--persimmon); }
+  .saved b { color:var(--ink); font-weight:600; }
+  .stage.signing .saved b { color:var(--oat); }
+
+  /* ── Tally ────────────────────────────────────────── */
+  .tally { margin-top:34px; background:var(--ink); padding:30px 22px; color:var(--oat); }
+  .tally .tag {
+    font-family:var(--f-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--persimmon); display:inline-flex; align-items:center; gap:8px;
+  }
+  .tally .tag::before {
+    content:""; width:7px; height:7px; border-radius:50%; background:var(--persimmon);
+    animation: dotPulse 3.6s ease-in-out infinite;
+  }
+  .tally h3 {
+    font-family:var(--f-display); font-variation-settings:"opsz" 100;
+    font-weight:500; font-size:24px; margin:10px 0 20px; letter-spacing:-.01em;
+  }
+  .tally .grid { display:flex; flex-direction:column; gap:0; }
+  .tally .line {
+    display:flex; justify-content:space-between; align-items:baseline;
+    border-bottom:1px solid rgba(244,239,230,.14); padding:13px 0;
+  }
+  .tally .line:first-child { border-top:1px solid rgba(244,239,230,.14); }
+  .tally .line .what { font-size:13.5px; color:rgba(244,239,230,.8); font-weight:300; }
+  .tally .line .what b { font-weight:500; color:var(--oat); }
+  .tally .line .amt {
+    font-family:var(--f-mono); font-size:13px; font-weight:500; color:var(--persimmon);
+    white-space:nowrap; padding-left:14px; letter-spacing:.04em; font-variant-numeric:tabular-nums;
+  }
+  .tally .big { margin-top:22px; border:1px solid var(--persimmon); padding:20px; text-align:center; }
+  .tally .big .num {
+    font-family:var(--f-display); font-variation-settings:"opsz" 144;
+    font-weight:500; font-size:42px; line-height:1; color:var(--persimmon);
+    letter-spacing:-.02em; font-variant-numeric:tabular-nums; display:inline-block;
+  }
+  .tally .big .lbl {
+    font-family:var(--f-mono); font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:rgba(244,239,230,.65); margin-top:10px;
+  }
+  .disclaimer { font-size:12px; color:var(--stone); margin-top:16px; font-style:italic; line-height:1.5; }
+
+  /* ── Pullquote ────────────────────────────────────── */
+  .cs-pullquote {
+    margin-top: 34px;
+    background: var(--oat-deep);
+    border-left: 2px solid var(--persimmon);
+    padding: 24px 20px;
+  }
+  .cs-pullquote .eyebrow {
+    display: block;
+    font-family: var(--f-mono); font-size:11px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--stone); margin-bottom:14px;
+  }
+  .cs-pullquote q {
+    font-family: var(--f-display); font-variation-settings:"opsz" 100;
+    font-weight:400; font-style:italic;
+    font-size: clamp(20px,5vw,26px); line-height:1.3; color:var(--ink);
+    quotes:none; display:block; margin:0;
+  }
+  .cs-pullquote q::before { content:"\201C"; color:var(--persimmon); font-style:normal; font-size:1.2em; line-height:0; vertical-align:-0.05em; margin-right:.03em; }
+  .cs-pullquote q::after  { content:"\201D"; color:var(--persimmon); font-style:normal; font-size:1.2em; line-height:0; vertical-align:-0.05em; margin-left:.03em; }
+  .cs-pullquote .attr {
+    display:block; margin-top:14px;
+    font-family:var(--f-mono); font-size:11px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--stone);
+  }
+
+  /* ── Closer ───────────────────────────────────────── */
+  .closer {
+    margin-top:34px; margin-bottom:70px;
+    background:var(--oat-deep); border:1px solid var(--rule); padding:30px 22px;
+  }
+  .closer h3 {
+    font-family:var(--f-display); font-variation-settings:"opsz" 100;
+    font-weight:500; font-size:24px; color:var(--ink); letter-spacing:-.015em;
+  }
+  .closer p { font-size:14.5px; color:var(--ink-soft); margin-top:12px; line-height:1.65; }
+  .cta-btn {
+    display: inline-flex; align-items:center; gap:10px;
+    background:var(--persimmon); color:var(--oat);
+    font-family:var(--f-body); font-weight:500; font-size:13px; letter-spacing:.01em;
+    padding:11px 18px; margin-top:18px; cursor:pointer; text-decoration:none;
+    transition: background .35s ease, transform .35s ease;
+  }
+  .cta-btn:hover { background:var(--persimmon-deep); transform:scale(1.02); }
+  .cta-btn .arr {
+    width:14px; height:1px; background:currentColor; position:relative;
+    transition: transform .35s ease;
+  }
+  .cta-btn .arr::after {
+    content:""; position:absolute; right:0; top:-3px;
+    width:7px; height:7px;
+    border-top:1px solid currentColor; border-right:1px solid currentColor;
+    transform:rotate(45deg);
+  }
+  .cta-btn:hover .arr { transform:translateX(3px); }
+
+  /* ── Footer ───────────────────────────────────────── */
+  .cs-footer {
+    text-align:center; padding:28px 18px 32px;
+    font-family:var(--f-mono); font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--stone); position:relative; z-index:2;
+    border-top:1px solid var(--rule);
+  }
+  .cs-footer a { color:var(--persimmon-deep); border-bottom:1px solid rgba(217,104,51,.3); padding-bottom:1px; }
+  .cs-footer a:hover { color:var(--persimmon); border-bottom-color:var(--persimmon); }
+
+  /* ── Reveal animation ─────────────────────────────── */
+  .reveal { opacity:0; transform:translateY(14px); }
+  .reveal.is-in { animation: rise .6s cubic-bezier(.2,.6,.2,1) forwards; }
+  @keyframes rise { to { opacity:1; transform:none; } }
+
+  /* ── Reduced motion ───────────────────────────────── */
+  @media (prefers-reduced-motion:reduce) {
+    .reveal, .reveal.is-in { animation:none; opacity:1; transform:none; }
+    .cs-hero .ink-wash, .page-blobs svg { animation:none !important; }
+    .mono-label.stamp::before, .foundation .tag::before, .tally .tag::before,
+    .ba .after .k::before { animation:none !important; }
+  }
+
+  /* ── Dark-mode guard ──────────────────────────────── */
+  @media (prefers-color-scheme:dark) {
+    body         { background:var(--oat) !important; color:var(--ink) !important; }
+    .cs-hero     { background:var(--oat) !important; }
+    .cs-hero h1  { color:var(--ink) !important; }
+    .cs-hero .lede { color:var(--ink-soft) !important; }
+    .intro       { color:var(--ink-soft) !important; }
+    .intro b     { color:var(--ink) !important; }
+    .foundation  { background:var(--oat-deep) !important; }
+    .foundation h3 { color:var(--ink) !important; }
+    .foundation p  { color:var(--ink-soft) !important; }
+    .flow-map .src, .foundation .why { background:var(--oat) !important; }
+    .stage         { background:var(--oat-deep) !important; }
+    .stage h4      { color:var(--ink) !important; }
+    .stage.signing { background:var(--ink) !important; }
+    .stage.signing h4 { color:var(--oat) !important; }
+    .saved         { background:var(--oat) !important; }
+    .stage.signing .saved { background:rgba(244,239,230,.10) !important; color:rgba(244,239,230,.92) !important; }
+    .stage.signing .saved b { color:var(--oat) !important; }
+    .cs-pullquote  { background:var(--oat-deep) !important; }
+    .cs-pullquote q { color:var(--ink) !important; }
+    .closer        { background:var(--oat-deep) !important; }
+    .closer h3     { color:var(--ink) !important; }
+    .tally         { background:var(--ink) !important; }
+    .cta-band      { background:var(--oat-deep) !important; }
+    .nav           { background:var(--oat) !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Nav ──────────────────────────────────────────────────── -->
+<header class="nav">
+  <div class="inner">
+    <a href="/" class="nav-logo" aria-label="JMG home">
+      <img src="../../assets/logo-primary.svg" alt="JMG" />
+    </a>
+    <a href="/" class="nav-back">Home</a>
+    <a href="/#contact" class="btn btn-primary">
+      Start a conversation <span class="arr">&rarr;</span>
+    </a>
+  </div>
+</header>
+
+<!-- ── Page-level ink-wash blobs ────────────────────────────── -->
+<div class="page-blobs" aria-hidden="true">
+  <svg class="pb-c" viewBox="0 0 800 600" preserveAspectRatio="none">
+    <defs><filter id="pbC" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="24"/></filter></defs>
+    <path filter="url(#pbC)" fill="#D96833" opacity="0.13" d="M120,280 C200,160 360,200 500,180 C640,160 720,300 680,420 C640,520 460,520 320,500 C200,480 80,460 80,360 C90,320 100,300 120,280 Z"/>
+  </svg>
+  <svg class="pb-d" viewBox="0 0 800 600" preserveAspectRatio="none">
+    <defs><filter id="pbD" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="26"/></filter></defs>
+    <path filter="url(#pbD)" fill="#1F1A14" opacity="0.08" d="M200,160 C340,100 480,200 600,220 C720,240 760,360 660,440 C540,520 360,500 220,460 C100,420 60,320 120,240 C150,200 180,180 200,160 Z"/>
+  </svg>
+  <svg class="pb-g" viewBox="0 0 800 700" preserveAspectRatio="none">
+    <defs><filter id="pbG" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="24"/></filter></defs>
+    <path filter="url(#pbG)" fill="#1F1A14" opacity="0.09" d="M180,240 C140,140 320,80 480,140 C620,180 620,80 700,220 C780,340 640,360 640,500 C640,620 500,660 360,620 C220,580 100,520 100,400 C110,340 220,340 180,240 Z"/>
+  </svg>
+  <svg class="pb-h" viewBox="0 0 700 500" preserveAspectRatio="none">
+    <defs><filter id="pbH" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="22"/></filter></defs>
+    <path filter="url(#pbH)" fill="#D96833" opacity="0.16" d="M180,200 C260,120 420,140 540,220 C640,290 600,400 480,420 C340,440 200,420 140,360 C90,320 100,260 180,200 Z"/>
+  </svg>
+</div>
+
+<!-- ── Case study hero ───────────────────────────────────────── -->
+<section class="cs-hero">
+  <svg class="ink-wash iw-orange" viewBox="0 0 800 400" preserveAspectRatio="none">
+    <defs><filter id="iw" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="20"/></filter></defs>
+    <path filter="url(#iw)" fill="#D96833" opacity="0.24" d="M120,200 C200,90 480,80 620,160 C740,230 720,330 580,340 C400,355 220,360 140,320 C80,290 60,260 120,200 Z"/>
+  </svg>
+  <svg class="ink-wash iw-ink" viewBox="0 0 1000 700" preserveAspectRatio="none">
+    <defs><filter id="iwInk" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="28"/></filter></defs>
+    <path filter="url(#iwInk)" fill="#1F1A14" opacity="0.10" d="M120,360 C260,180 420,140 580,260 C720,360 760,180 900,300 C980,400 820,520 660,540 C440,560 240,620 140,540 C80,500 50,440 120,360 Z"/>
+  </svg>
+  <div class="inner">
+    <div class="toplabels">
+      <span class="mono-label stamp">Case &middot; PureSteel Construction Inc.</span>
+      <span class="mono-label">Dallas, TX</span>
+    </div>
+    <h1>From a new subcontractor to a signed contract, without the busywork</h1>
+    <p class="lede">PureSteel Construction Inc. was losing hours every week to copy-paste contract work. Here&rsquo;s how that entire chain became hands-off, and what it gave back.</p>
+    <div class="client">PureSteel Construction Inc. &middot; Jonathan Arvizu, Owner</div>
+  </div>
+
+  <!-- Download band — full-bleed, seats on the stat bar -->
+  <div class="cta-band">
+    <div class="cta-inner">
+      <div class="txt">
+        <div class="t">The complete case study</div>
+        <div class="s">PDF &middot; 8 slides</div>
+      </div>
+      <a class="dl" href="PureSteel_Slides.pdf" download="PureSteel Case Study.pdf">Download</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Stat bar ──────────────────────────────────────────────── -->
+<div class="stat-bar" id="statBar">
+  <div class="stat"><div class="num" data-stat="hours">~15&ndash;17 hrs</div><div class="lbl">Saved / Month</div></div>
+  <div class="stat"><div class="num" data-stat="minutes">&lt;2 min</div><div class="lbl">Per Contract</div></div>
+  <div class="stat"><div class="num" data-stat="source">1</div><div class="lbl">Source of Truth</div></div>
+</div>
+
+<div class="wrap">
+
+  <p class="intro reveal" style="animation-delay:.05s">
+    Every contractor knows the drill: a new subcontractor comes on, paperwork gets retyped, agreements get emailed back and forth, signed copies get hunted down and filed by hand. <b>It works, until it&rsquo;s eating an afternoon a week.</b> This is the system that replaced all of it.
+  </p>
+
+  <!-- THE FOUNDATION -->
+  <div class="section-label">The Foundation</div>
+  <div class="foundation reveal" style="animation-delay:.1s">
+    <span class="tag">Enter it once</span>
+    <h3>The forms stay simple. The backend fills in the rest.</h3>
+    <p>Two records do the quiet work. Custom forms read from the <b>contact directory</b>, so client and subcontractor dropdowns populate themselves and the owner only ever picks from a list. Behind the scenes, the workflows look up everything else from a <b>master project list</b>: enter a single purchase order (PO) number, and the project and client name fill in automatically.</p>
+    <div class="flow-map">
+      <div class="src">
+        <span class="src-k">Forms read</span>
+        <span class="src-v">Contact directory</span>
+        <span class="src-n">Client &amp; subcontractor lists, dropdowns fill themselves</span>
+      </div>
+      <div class="src">
+        <span class="src-k">Workflows read</span>
+        <span class="src-v">Master project list</span>
+        <span class="src-n">PO number &rarr; project &rarr; client, looked up on the backend</span>
+      </div>
+    </div>
+    <div class="why">
+      <b>Why it matters:</b> The owner enters the bare minimum and the system reconstructs the full picture on its own. Update a client in one spot and everything downstream&mdash;every form, every contract, every filing folder&mdash;stays in sync instantly.
+    </div>
+  </div>
+
+  <div class="flow-down reveal" style="animation-delay:.14s"></div>
+
+  <!-- THE JOURNEY -->
+  <div class="section-label">The Journey</div>
+
+  <div class="stage reveal" style="animation-delay:.18s">
+    <div class="num">Step 01 &middot; Onboarding</div>
+    <h4>A new subcontractor signs up</h4>
+    <div class="ba">
+      <div class="blk before"><div class="k">Before</div><div class="v">Someone manually emails a welcome note and the tax form, then waits and remembers to chase it.</div></div>
+      <div class="blk after"><div class="k">Now</div><div class="v">The moment they register, a branded welcome email with their W-9 goes out automatically. Their details are on file instantly.</div></div>
+    </div>
+    <div class="saved"><span class="mk">Saved</span><span>Removes a manual send and the mental load of follow-up, <b>every single hire.</b></span></div>
+  </div>
+
+  <div class="flow-down reveal" style="animation-delay:.2s"></div>
+
+  <div class="stage reveal" style="animation-delay:.24s">
+    <div class="num">Step 02 &middot; Agreements</div>
+    <h4>A subcontract agreement is needed</h4>
+    <div class="ba">
+      <div class="blk before"><div class="k">Before</div><div class="v">Open a blank document, retype the project, client, price and scope by hand, format it, email it for review, then send it for signature separately.</div></div>
+      <div class="blk after"><div class="k">Now</div><div class="v">A polished, branded subcontract agreement builds itself from the submitted details, scope of work cleaned up and formatted automatically, and routes straight to signing.</div></div>
+    </div>
+    <div class="saved"><span class="mk">Saved</span><span>What took <b>45&ndash;60 minutes</b> per agreement now takes <b>under 2 minutes.</b></span></div>
+  </div>
+
+  <div class="flow-down reveal" style="animation-delay:.28s"></div>
+
+  <div class="stage reveal" style="animation-delay:.30s">
+    <div class="num">Step 03 &middot; Change Orders</div>
+    <h4>A project scope changes mid-job</h4>
+    <div class="ba">
+      <div class="blk before"><div class="k">Before</div><div class="v">Coordinate by phone and email, draft the paperwork by hand, get the client to approve, then loop in each subcontractor, all tracked in scattered email threads.</div></div>
+      <div class="blk after"><div class="k">Now</div><div class="v">One form handles every case: client approval, subcontract agreement, or both. Pick the PO number and the project and client fill in on their own; approvals happen with a single click in an email, and the right contracts fire off automatically.</div></div>
+    </div>
+    <div class="saved"><span class="mk">Saved</span><span>A typical change order reclaims roughly <b>40&ndash;70 minutes</b> of back-and-forth coordination.</span></div>
+  </div>
+
+  <div class="flow-down reveal" style="animation-delay:.34s"></div>
+
+  <!-- SIGNING — dark card -->
+  <div class="stage signing reveal" style="animation-delay:.38s">
+    <div class="num">Step 04 &middot; Signatures</div>
+    <h4>Everything routes to one signing flow</h4>
+    <div class="ba">
+      <div class="blk before"><div class="k">Before</div><div class="v">Documents sent for signature one-off, with no consistent order or tracking.</div></div>
+      <div class="blk after"><div class="k">Now</div><div class="v">Whether it started as a subcontract agreement or a change order, it lands in the same signing process: the owner signs first, then the subcontractor. Consistent every time.</div></div>
+    </div>
+    <div class="saved"><span class="mk">Converge</span><span>Two separate paths, <b>one reliable finish line.</b></span></div>
+  </div>
+
+  <div class="flow-down reveal" style="animation-delay:.42s"></div>
+
+  <div class="stage-frame reveal" style="animation-delay:.46s">
+    <div class="stage">
+      <div class="num">Step 05 &middot; Filing</div>
+      <h4>The signed contract files itself</h4>
+      <div class="ba">
+        <div class="blk before"><div class="k">Before</div><div class="v">Download the signed PDF, find the right client folder, create one if it&rsquo;s missing, rename the file correctly, and upload it.</div></div>
+        <div class="blk after"><div class="k">Now</div><div class="v">The instant a contract is signed, it&rsquo;s named correctly and filed in the right client and project folder, created automatically if it didn&rsquo;t exist yet.</div></div>
+      </div>
+      <div class="saved"><span class="mk">Saved</span><span>Saves about <b>5&ndash;10 minutes</b> of filing and naming on <b>every signed document.</b></span></div>
+    </div>
+  </div>
+
+  <!-- TALLY -->
+  <div class="tally reveal" style="animation-delay:.5s">
+    <div class="tag">Adding it up</div>
+    <h3>What the month looks like now</h3>
+    <div class="grid">
+      <div class="line"><span class="what"><b>~8&ndash;10</b> subcontract agreements</span><span class="amt" data-tally="6-8">~6&ndash;8 hrs</span></div>
+      <div class="line"><span class="what"><b>~5</b> change orders</span><span class="amt" data-tally="4-6">~4&ndash;6 hrs</span></div>
+      <div class="line"><span class="what">Filing &amp; onboarding, every doc</span><span class="amt" data-tally="2-3">~2&ndash;3 hrs</span></div>
+    </div>
+    <div class="big">
+      <div class="num" data-tally-big="15-17">~15&ndash;17 hours</div>
+      <div class="lbl">Handed back every month</div>
+    </div>
+  </div>
+  <p class="disclaimer reveal" style="animation-delay:.54s">
+    Figures are conservative estimates based on measured per-task times and typical monthly volume. Actual savings scale with how busy the business is.
+  </p>
+
+  <!-- PULLQUOTE -->
+  <figure class="cs-pullquote reveal" style="animation-delay:.56s">
+    <span class="eyebrow">From the client</span>
+    <q>Our processes are outperforming companies with dedicated marketing and operations teams.</q>
+    <figcaption class="attr">Jonathan Arvizu &middot; Owner, PureSteel Construction Inc.</figcaption>
+  </figure>
+
+  <!-- CLOSER -->
+  <div class="closer reveal" style="animation-delay:.58s">
+    <h3>That&rsquo;s most of a working week, back.</h3>
+    <p>The work still happens. It just doesn&rsquo;t happen by hand anymore. The same system can be built around how your business already runs.</p>
+    <a href="/#contact" class="cta-btn">Start a conversation <span class="arr"></span></a>
+  </div>
+
+</div><!-- /.wrap -->
+
+<!-- ── Footer ────────────────────────────────────────────────── -->
+<footer class="cs-footer">
+  <span>&copy; 2026 &middot; <a href="/">gonzalezjuanm.com</a></span>
+  <span style="margin-left:24px;">Operations Automation &middot; Case Study</span>
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* Reveal on scroll */
+  var revealEls = document.querySelectorAll('.reveal');
+  if(reduce){
+    revealEls.forEach(function(el){ el.classList.add('is-in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('is-in'); io.unobserve(e.target); }
+      });
+    }, {threshold:.15, rootMargin:'0px 0px -40px 0px'});
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+  /* Stat-bar counter */
+  function easeOutCubic(t){ return 1 - Math.pow(1-t, 3); }
+  function animateNumber(el, target, duration, format){
+    if(reduce){ el.textContent = format(target); return; }
+    var start = performance.now();
+    function frame(now){
+      var t = Math.min(1, (now - start) / duration);
+      var v = target * easeOutCubic(t);
+      el.textContent = format(v);
+      if(t < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  var statBar = document.getElementById('statBar');
+  var statsFired = false;
+  function fireStats(){
+    if(statsFired) return; statsFired = true;
+    statBar.classList.add('stats-live');
+    var hrsEl = statBar.querySelector('[data-stat="hours"]');
+    animateNumber(hrsEl, 17, 1500, function(v){ return '~' + Math.round(v) + ' hrs'; });
+    setTimeout(function(){ hrsEl.textContent = '~15\u201317 hrs'; }, 1550);
+    var minEl = statBar.querySelector('[data-stat="minutes"]');
+    animateNumber(minEl, 2, 1100, function(v){ return '<' + Math.max(1, Math.ceil(v)) + ' min'; });
+    setTimeout(function(){ minEl.textContent = '<2 min'; }, 1150);
+    var srcEl = statBar.querySelector('[data-stat="source"]');
+    srcEl.style.opacity = '0';
+    srcEl.textContent = '1';
+    setTimeout(function(){
+      srcEl.style.transition = 'opacity .8s ease';
+      srcEl.style.opacity = '1';
+    }, 600);
+  }
+  var statIO = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting) fireStats(); });
+  }, {threshold:.5});
+  statIO.observe(statBar);
+
+  /* Tally counters */
+  var tallyLines = document.querySelectorAll('[data-tally]');
+  var tallyBig   = document.querySelector('[data-tally-big]');
+  var tallyFired = false;
+  function fireTally(){
+    if(tallyFired) return; tallyFired = true;
+    tallyLines.forEach(function(el, i){
+      var parts = el.dataset.tally.split('-').map(Number);
+      var hi = parts[1];
+      var original = el.textContent;
+      animateNumber(el, hi, 1100 + i*120, function(v){ return '~' + Math.round(v) + ' hrs'; });
+      setTimeout(function(){ el.textContent = original; }, 1300 + i*120);
+    });
+    if(tallyBig){
+      var bigParts = tallyBig.dataset.tallyBig.split('-').map(Number);
+      var bigHi = bigParts[1];
+      var bigOriginal = tallyBig.textContent;
+      animateNumber(tallyBig, bigHi, 1700, function(v){ return '~' + Math.round(v) + ' hours'; });
+      setTimeout(function(){ tallyBig.textContent = bigOriginal; }, 1900);
+    }
+  }
+  var tallyEl = document.querySelector('.tally');
+  if(tallyEl){
+    var tIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting) fireTally(); });
+    }, {threshold:.35});
+    tIO.observe(tallyEl);
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!-- ============================================================ -->
+<!-- PURESTEEL PREVIEW CARD                                        -->
+<!-- Drop into the .studies grid in the Work section.              -->
+<!-- ============================================================ -->
+
+<a class="studyCard primary" href="/case/puresteel">
+  <div class="label">
+    <span class="mono">Case · PureSteel Construction Inc.</span>
+    <span class="mono right liveTag"><span class="liveDot"></span>Live</span>
+  </div>
+
+  <div class="cardBody">
+    <div class="cardCopy">
+      <div class="cardHead">Contract work that ran by hand, now runs on its own.</div>
+      <p class="cardNarrative">Onboarding, contracts, change orders, and filing were each done by hand. One contact list and one project list now feed them all, and the documents route, sign, and file themselves.</p>
+    </div>
+
+    <!-- Abstract mark: dots travel each line and converge at the persimmon dot -->
+    <div class="mark" aria-hidden="true">
+      <svg class="markA" viewBox="0 0 96 96">
+        <!-- wires -->
+        <path class="ln" d="M2,14 C40,14 50,48 80,48"/>
+        <path class="ln" d="M2,32 C40,32 56,48 80,48"/>
+        <path class="ln" d="M2,48 L80,48"/>
+        <path class="ln" d="M2,64 C40,64 56,48 80,48"/>
+        <path class="ln" d="M2,82 C40,82 50,48 80,48"/>
+        <path class="out" d="M80,48 L94,48"/>
+        <!-- beads threaded on the wires; animateMotion centers the circle on the path -->
+        <circle class="trav" r="2.8">
+          <animateMotion dur="2.6s" repeatCount="indefinite" keyPoints="0;1;1;0;0" keyTimes="0;0.62;0.74;0.86;1" calcMode="linear" path="M2,14 C40,14 50,48 80,48"/>
+        </circle>
+        <circle class="trav" r="2.8">
+          <animateMotion dur="2.6s" repeatCount="indefinite" keyPoints="0;1;1;0;0" keyTimes="0;0.62;0.74;0.86;1" calcMode="linear" path="M2,32 C40,32 56,48 80,48"/>
+        </circle>
+        <circle class="trav" r="2.8">
+          <animateMotion dur="2.6s" repeatCount="indefinite" keyPoints="0;1;1;0;0" keyTimes="0;0.62;0.74;0.86;1" calcMode="linear" path="M2,48 L80,48"/>
+        </circle>
+        <circle class="trav" r="2.8">
+          <animateMotion dur="2.6s" repeatCount="indefinite" keyPoints="0;1;1;0;0" keyTimes="0;0.62;0.74;0.86;1" calcMode="linear" path="M2,64 C40,64 56,48 80,48"/>
+        </circle>
+        <circle class="trav" r="2.8">
+          <animateMotion dur="2.6s" repeatCount="indefinite" keyPoints="0;1;1;0;0" keyTimes="0;0.62;0.74;0.86;1" calcMode="linear" path="M2,82 C40,82 50,48 80,48"/>
+        </circle>
+        <circle class="pt" cx="80" cy="48" r="4"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="cardOutcome">
+    <div class="outcomeStat">
+      <div class="mono outcomeLabel">Outcome</div>
+      <div class="stat">~15–17 hrs</div>
+      <div class="small outcomeUnit">saved / month</div>
+    </div>
+    <span class="readCase">Read the case <span class="arrow">→</span></span>
+  </div>
+</a>
+
+
+<!-- ============================================================ -->
+<!-- SUPPORTING STYLES — merge into your stylesheet                -->
+<!-- ============================================================ -->
+<style>
+  /* Whole-card link */
+  .studyCard{ text-decoration:none; color:inherit; transition:transform .35s ease, box-shadow .35s ease; }
+  .studyCard:hover{ transform:scale(1.02); box-shadow:0 12px 30px rgba(31,26,20,.10); }
+
+  /* Live tag with pulsing persimmon dot */
+  .liveTag{ display:inline-flex; align-items:center; gap:6px; }
+  .liveDot{
+    width:6px; height:6px; border-radius:50%; background:var(--persimmon);
+    box-shadow:0 0 0 0 rgba(217,104,51,.55); animation:livePulse 2.4s ease-out infinite;
+  }
+  @keyframes livePulse{
+    0%{ box-shadow:0 0 0 0 rgba(217,104,51,.45); }
+    70%{ box-shadow:0 0 0 6px rgba(217,104,51,0); }
+    100%{ box-shadow:0 0 0 0 rgba(217,104,51,0); }
+  }
+  @media (prefers-reduced-motion:reduce){ .liveDot{ animation:none; } }
+
+  /* Body — copy + mark in two columns */
+  .cardBody{
+    display:grid; grid-template-columns:1fr 96px; gap:18px;
+    padding:24px 0 22px; flex:1; align-items:start;
+  }
+  .cardCopy{ display:flex; flex-direction:column; gap:10px; }
+  .cardHead{
+    font-family:'Fraunces',serif; font-weight:500; font-size:24px; line-height:1.14;
+    letter-spacing:-.01em; color:var(--ink); text-wrap:balance;
+  }
+  .cardNarrative{
+    font-family:'Inter',sans-serif; font-size:13.5px; line-height:1.6;
+    color:var(--stone,#5C544A); max-width:44ch;
+  }
+
+  /* Mark slot — 96×96, quiet supporting element */
+  .mark{ width:96px; height:96px; display:flex; align-items:center; justify-content:center; }
+  .mark svg{ width:100%; height:100%; display:block; overflow:visible; }
+  .markA .ln{ fill:none; stroke:var(--ink); stroke-width:1; }
+  .markA .out{ fill:none; stroke:var(--persimmon); stroke-width:1.4; }
+  .markA .pt{ fill:var(--persimmon); transform-box:fill-box; transform-origin:center; }
+
+  /* Traveling dots — each follows its own line into the convergence point */
+  /* Beads — movement handled by <animateMotion> in the SVG for iOS reliability */
+  .markA .trav{ fill:var(--persimmon); }
+  /* End dot pulses as the column lands */
+  .markA .pt{ fill:var(--persimmon); transform-box:fill-box; transform-origin:center; animation:ptPulse 2.6s ease-out infinite; }
+  @keyframes ptPulse{
+    0%,56%{ transform:scale(1); }
+    66%{ transform:scale(1.22); }
+    100%{ transform:scale(1); }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .markA .trav{ display:none; }
+    .markA .pt{ animation:none; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .markA .trav{ animation:none; offset-distance:100%; opacity:1; }
+    .markA .pt{ animation:none; }
+  }
+
+  /* Outcome row */
+  .cardOutcome{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    border-top:1px solid var(--rule); padding-top:14px;
+  }
+  .outcomeLabel{ font-size:8px; letter-spacing:.14em; text-transform:uppercase; color:var(--stone,#5C544A); }
+  .cardOutcome .stat{
+    font-family:'Fraunces',serif; font-weight:500; font-size:30px; line-height:1;
+    letter-spacing:-.01em; color:var(--persimmon); margin-top:4px;
+  }
+  .outcomeUnit{ font-size:11px; color:var(--stone,#5C544A); margin-top:3px; }
+  .readCase{
+    font-family:'Inter',sans-serif; font-size:13px; font-weight:500; color:var(--ink);
+    white-space:nowrap; display:inline-flex; align-items:center; gap:6px;
+  }
+  .readCase .arrow{ color:var(--persimmon); transition:transform .35s ease; }
+  .studyCard:hover .readCase .arrow{ transform:translateX(3px); }
+
+  @media (max-width:560px){
+    .cardHead{ font-size:21px; }
+    .cardBody{ grid-template-columns:1fr 80px; }
+    .mark{ width:80px; height:80px; }
+  }
+</style>

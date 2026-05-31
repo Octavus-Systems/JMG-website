@@ -378,130 +378,172 @@
     text-transform: uppercase;
     color: var(--stone);
   }
-  .about .text-stack { display: flex; flex-direction: column; gap: 32px; }
-  .about .col-primary p { font-size: 17px; line-height: 1.65; max-width: 56ch; }
-  .about .col-secondary p { color: var(--stone); max-width: 56ch; }
-
-  /* ── Work ────────────────────────────────────────────────── */
-  .work .body-block {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 56px;
-    margin-bottom: 24px;
+  .about .text-card {
+    background: var(--oat-deep);
+    border-left: 2px solid var(--persimmon);
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
   }
-  .work .client-meta {
-    display: block;
+  .about .text-card .card-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--stone);
+    margin-bottom: 18px;
+  }
+  .about .text-card .card-primary {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--ink);
+    font-weight: 500;
+    margin: 0;
+    max-width: 52ch;
+  }
+  .about .text-card .card-rule {
+    border: 0;
+    border-top: 1px solid var(--rule);
+    margin: 22px 0;
+  }
+  .about .text-card .card-secondary {
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    line-height: 1.72;
     color: var(--stone);
     margin: 0 0 14px;
+    max-width: 52ch;
   }
-  .work .client {
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 20px;
-    line-height: 1.35;
-    letter-spacing: -0.005em;
-    color: var(--ink-soft);
-    margin: 0 0 40px;
-    max-width: 60ch;
-    grid-column: 1 / -1;
-  }
+  .about .text-card .card-secondary:last-child { margin-bottom: 0; }
 
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 64px;
-    border-top: 1px solid var(--ink);
-    border-bottom: 1px solid var(--rule);
-  }
-  .data-table thead th {
-    text-align: left;
-    padding: 16px 18px 14px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--stone);
-    font-weight: 400;
-    border-bottom: 1px solid var(--rule);
-    background: transparent;
-  }
-  .data-table thead th:first-child { padding-left: 0; }
-  .data-table thead th:last-child  { padding-right: 0; text-align: right; }
-  .data-table tbody td {
-    padding: 22px 18px;
-    font-family: var(--font-body);
-    font-size: 15px;
-    color: var(--ink-soft);
-    border-bottom: 1px solid var(--rule);
-    vertical-align: top;
-  }
-  .data-table tbody td:first-child {
-    padding-left: 0;
-    color: var(--ink);
-    font-weight: 500;
-  }
-  .data-table tbody td:last-child {
-    padding-right: 0;
-    text-align: right;
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--ink);
-    letter-spacing: 0.04em;
-  }
-  .data-table tbody tr:last-child td { border-bottom: 0; }
-
-  /* Data row — stat left of table, bracketed by matching rules. */
-  .work-data {
+  /* ── Work ────────────────────────────────────────────────── */
+  /* Studies grid — one card now, expandable later */
+  .studies {
     display: grid;
-    grid-template-columns: 260px 1fr;
+    grid-template-columns: 1fr;
     gap: 24px;
-    align-items: stretch;
-    margin: 56px 0 64px;
+    margin-bottom: 48px;
   }
-  .work-data .data-table { margin-bottom: 0; }
-  .work-data .callout {
-    padding: 0;
-    margin: 0;
+
+  /* Study card */
+  .studyCard {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 16px;
+    background: var(--oat-deep);
+    padding: 22px 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .35s ease, box-shadow .35s ease;
   }
-  .work-data .callout .v {
+  .studyCard:hover { transform: scale(1.02); box-shadow: 0 12px 30px rgba(31,26,20,.10); }
+
+  /* Label row */
+  .studyCard .label {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .liveTag { display: inline-flex; align-items: center; gap: 6px; }
+  .liveDot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--persimmon);
+    box-shadow: 0 0 0 0 rgba(217,104,51,.55);
+    animation: livePulse 2.4s ease-out infinite;
+  }
+  @keyframes livePulse {
+    0%   { box-shadow: 0 0 0 0 rgba(217,104,51,.45); }
+    70%  { box-shadow: 0 0 0 6px rgba(217,104,51,0); }
+    100% { box-shadow: 0 0 0 0 rgba(217,104,51,0); }
+  }
+  @media (prefers-reduced-motion: reduce) { .liveDot { animation: none; } }
+
+  /* Card body */
+  .cardBody {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 18px;
+    padding: 0 0 22px;
+    flex: 1;
+    align-items: center;
+  }
+  .cardCopy { display: flex; flex-direction: column; gap: 10px; }
+  .cardHead {
     font-family: var(--font-display);
     font-weight: 500;
-    line-height: 0.92;
-    letter-spacing: -0.04em;
-    color: var(--persimmon);
-    margin-top: -0.14em;
+    font-size: 24px;
+    line-height: 1.14;
+    letter-spacing: -.01em;
+    color: var(--ink);
+    text-wrap: balance;
   }
-  .work-data .callout .v .num {
-    display: block;
-    font-size: clamp(96px, 12vw, 168px);
-    line-height: 0.9;
-    letter-spacing: -0.05em;
-  }
-  .work-data .callout .v .unit {
-    display: block;
-    font-size: clamp(36px, 4vw, 56px);
-    line-height: 1;
-    letter-spacing: -0.02em;
-    margin-top: 6px;
-  }
-  .work-data .callout .k {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+  .cardNarrative {
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    line-height: 1.6;
     color: var(--stone);
-    line-height: 1.5;
-    max-width: 30ch;
+    max-width: 44ch;
   }
+
+  /* SVG mark — centered in its 1fr column, away from both copy and right edge */
+  .studyMark { width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+  .studyMark svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .markA .ln  { fill: none; stroke: var(--ink); stroke-width: 1; }
+  .markA .out { fill: none; stroke: var(--persimmon); stroke-width: 1.4; }
+  .markA .trav { fill: var(--persimmon); }
+  .markA .pt {
+    fill: var(--persimmon);
+    transform-box: fill-box; transform-origin: center;
+    animation: ptPulse 2.6s ease-out infinite;
+  }
+  @keyframes ptPulse {
+    0%,56% { transform: scale(1); }
+    66%    { transform: scale(1.22); }
+    100%   { transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .markA .trav { display: none; }
+    .markA .pt   { animation: none; }
+  }
+
+  /* Outcome row */
+  .cardOutcome {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    border-top: 1px solid var(--rule);
+    padding-top: 14px;
+  }
+  .outcomeLabel { font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: var(--stone); }
+  .cardOutcome .outcomeStat .outcomeStat-num {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: -.01em;
+    color: var(--persimmon);
+    margin-top: 4px;
+  }
+  .outcomeUnit { font-size: 11px; color: var(--stone); margin-top: 3px; }
+  .readCase {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .readCase .arrow { color: var(--persimmon); transition: transform .35s ease; }
+  .studyCard:hover .readCase .arrow { transform: translateX(3px); }
+
+  @media (max-width: 560px) {
+    .cardHead { font-size: 21px; }
+    .cardBody { grid-template-columns: 1fr; }
+    .studyMark { display: none; }
+  }
+
 
   /* Pullquote — soft oat-deep panel, three typographic regions. */
   .pullquote {
@@ -798,14 +840,11 @@
   @media (max-width: 960px) {
     :root { --container-pad: 28px; }
     .about .cols,
-    .work .body-block,
     .form { grid-template-columns: 1fr; gap: 32px; display: grid; }
     .about .portrait { max-width: 320px; }
     .pullquote { grid-template-columns: 1fr; }
     .section { padding: 80px 0; }
     .hero { padding: 64px 0 80px; min-height: auto; }
-    .work-data { grid-template-columns: 1fr; gap: 32px; }
-    .work-data .callout { padding-top: 0; }
     .footer { padding: 48px 0 28px; margin-top: 56px; }
     .pullquote { padding-left: 28px; padding-right: 28px; }
     .workflow { grid-template-columns: 1fr; gap: 8px; }
@@ -830,9 +869,9 @@
         <img src="assets/logo-primary.svg" alt="JMG" />
       </a>
       <nav class="nav-links" aria-label="Primary">
-        <a href="#about">About</a>
-        <a href="#work">Work</a>
         <a href="#services">Services</a>
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
         <a href="#contact">Contact</a>
       </nav>
       <a href="#contact" class="btn btn-primary">
@@ -895,167 +934,6 @@
     </div>
   </section>
 
-  <!-- ───────────────────── ABOUT ───────────────────── -->
-  <section class="section about" id="about">
-    <!-- Ink blob, top-left -->
-    <svg class="section-wash section-wash--ink-tl" viewBox="0 0 560 420" aria-hidden="true" preserveAspectRatio="none">
-      <defs>
-        <filter id="about-wash-i" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="22" />
-        </filter>
-      </defs>
-      <path d="M100,220 C50,150 140,50 240,64 C340,80 420,52 488,128 C544,188 492,288 400,318 C320,344 222,344 162,308 C108,272 96,250 100,220 Z"
-            fill="#1F1A14" opacity="0.09" filter="url(#about-wash-i)" />
-    </svg>
-    <div class="container">
-      <div class="rail section-head">
-        <span class="mono">01 &nbsp;/&nbsp; About</span>
-        <h2 class="h2">
-          An independent practice in Austin<span class="dot" aria-hidden="true"></span>
-        </h2>
-      </div>
-
-      <div class="rail">
-        <div class="cols">
-          <div>
-            <div class="portrait">
-              <img src="assets/portrait.jpeg" alt="Juan M. González" />
-            </div>
-            <div class="portrait-caption">Juan M. Gonz&aacute;lez &middot; Austin, TX</div>
-          </div>
-          <div class="text-stack">
-            <div class="col-primary">
-              <p class="body">
-                I&rsquo;m Juan Gonz&aacute;lez, an AI operations consultant
-                based in Austin. I work with small business owners in
-                services and professional firms who are running the
-                company themselves and feeling the friction.
-              </p>
-            </div>
-            <div class="col-secondary">
-              <p class="body">
-                My background is in project coordination and operations. I
-                spent four years managing 3,000+ projects and 2,400+ client
-                meetings at a B2B agency, translating complex requirements
-                into systems that actually moved. I&rsquo;ve worked inside
-                Salesforce, built multi-stage automation programs, led
-                account teams, and now apply that same operational
-                thinking to small business infrastructure using AI and
-                modern automation tools.
-              </p>
-              <p class="body">
-                The goal is always the same: less administrative weight,
-                more room to work.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ───────────────────── WORK ───────────────────── -->
-  <section class="section work" id="work">
-    <!-- Persimmon blob, mid-right -->
-    <svg class="section-wash section-wash--persimmon-mr" viewBox="0 0 700 540" aria-hidden="true" preserveAspectRatio="none">
-      <defs>
-        <filter id="work-wash-p" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="26" />
-        </filter>
-      </defs>
-      <path d="M520,80 C600,110 660,210 612,308 C570,396 612,470 522,490 C418,514 308,476 222,428 C140,382 78,310 116,228 C152,150 248,118 348,108 C420,100 472,62 520,80 Z"
-            fill="#D96833" opacity="0.16" filter="url(#work-wash-p)" />
-    </svg>
-    <div class="container">
-      <div class="rail section-head">
-        <span class="mono">02 &nbsp;/&nbsp; Work</span>
-        <h2 class="h2">
-          Case study<span class="dot" aria-hidden="true"></span>
-        </h2>
-      </div>
-
-      <div class="rail">
-        <div>
-          <span class="mono client-meta">PureSteel Construction Inc. &middot; Dallas, TX</span>
-          <h3 class="client">From subcontractor onboarding to signed document filing, end to end.</h3>
-
-          <div class="body-block">
-            <p class="body">
-              PureSteel Construction Inc. is a commercial steel contractor based
-              in Dallas managing multiple active projects simultaneously.
-              The owner was handling subcontract agreements, change orders,
-              and subcontractor onboarding entirely by hand. Every document
-              drafted manually, every signature chased over email, every
-              signed PDF filed by hand.
-            </p>
-            <p class="body">
-              I designed and built a suite of interconnected automation
-              workflows, end to end, from subcontractor onboarding to
-              signed document filing. The systems are live, actively used,
-              and maintained by one person.
-            </p>
-          </div>
-
-          <div class="work-data">
-            <div class="callout">
-              <span class="v">
-                <span class="num" data-count="10" data-suffix="+">10+</span>
-                <span class="unit">hours</span>
-              </span>
-              <span class="k">
-                of manual administrative work eliminated per month
-              </span>
-            </div>
-
-            <table class="data-table" aria-label="PureSteel Construction Inc. results">
-              <thead>
-                <tr>
-                  <th scope="col">Workflow</th>
-                  <th scope="col">Before</th>
-                  <th scope="col">After</th>
-                  <th scope="col">Monthly time saved</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Auto-generated contract agreements</td>
-                  <td>45&ndash;60 min each</td>
-                  <td>~2 min</td>
-                  <td>6&ndash;10 hrs</td>
-                </tr>
-                <tr>
-                  <td>Change order approvals and contract generation</td>
-                  <td>40&ndash;70 min each</td>
-                  <td>~3 min</td>
-                  <td>2&ndash;6 hrs</td>
-                </tr>
-                <tr>
-                  <td>Automatic document filing and folder management</td>
-                  <td>5&ndash;10 min each</td>
-                  <td>Immediate</td>
-                  <td>1&ndash;2 hrs</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <figure class="pullquote">
-            <div>
-              <span class="pq-eyebrow">From the client</span>
-              <q>
-                Our processes are outperforming companies with dedicated
-                marketing and operations teams.
-              </q>
-              <figcaption class="attr">
-                Jonathan Arvizu &middot; Owner, PureSteel Construction Inc.
-              </figcaption>
-            </div>
-          </figure>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ───────────────────── SERVICES ───────────────────── -->
   <section class="section services" id="services">
     <!-- Ink blob, bottom-left -->
@@ -1070,7 +948,7 @@
     </svg>
     <div class="container">
       <div class="rail section-head">
-        <span class="mono">03 &nbsp;/&nbsp; Services</span>
+        <span class="mono">01 &nbsp;/&nbsp; Services</span>
         <h2 class="h2">
           Simple by design<span class="dot" aria-hidden="true"></span>
         </h2>
@@ -1119,6 +997,124 @@
           <a href="#contact" class="btn btn-ghost">
             Start a conversation <span class="arr">&rarr;</span>
           </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────── WORK ───────────────────── -->
+  <section class="section work" id="work">
+    <!-- Persimmon blob, mid-right -->
+    <svg class="section-wash section-wash--persimmon-mr" viewBox="0 0 700 540" aria-hidden="true" preserveAspectRatio="none">
+      <defs>
+        <filter id="work-wash-p" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="26" />
+        </filter>
+      </defs>
+      <path d="M520,80 C600,110 660,210 612,308 C570,396 612,470 522,490 C418,514 308,476 222,428 C140,382 78,310 116,228 C152,150 248,118 348,108 C420,100 472,62 520,80 Z"
+            fill="#D96833" opacity="0.16" filter="url(#work-wash-p)" />
+    </svg>
+    <div class="container">
+      <div class="rail section-head">
+        <span class="mono">02 &nbsp;/&nbsp; Work</span>
+        <h2 class="h2">
+          Case study<span class="dot" aria-hidden="true"></span>
+        </h2>
+      </div>
+
+      <div class="rail">
+        <div class="studies">
+          <a class="studyCard" href="/case/puresteel">
+            <div class="label">
+              <span class="mono">Case &middot; PureSteel Construction Inc.</span>
+              <span class="mono liveTag"><span class="liveDot"></span>Live</span>
+            </div>
+
+            <div class="cardBody">
+              <div class="cardCopy">
+                <div class="cardHead">Contract work that ran by hand, now runs on its own.</div>
+                <p class="cardNarrative">Onboarding, contracts, change orders, and filing were each done by hand. One contact list and one project list now feed them all, and the documents route, sign, and file themselves.</p>
+              </div>
+
+              <div class="studyMark" aria-hidden="true">
+                <svg class="markA" viewBox="0 0 96 96">
+                  <path class="ln" d="M2,14 C40,14 50,48 80,48"/>
+                  <path class="ln" d="M2,32 C40,32 56,48 80,48"/>
+                  <path class="ln" d="M2,48 L80,48"/>
+                  <path class="ln" d="M2,64 C40,64 56,48 80,48"/>
+                  <path class="ln" d="M2,82 C40,82 50,48 80,48"/>
+                  <path class="out" d="M80,48 L94,48"/>
+                  <circle class="trav" r="2.8"><animateMotion dur="2.6s" repeatCount="indefinite" keyPoints="0;1;1;0;0" keyTimes="0;0.62;0.74;0.86;1" calcMode="linear" path="M2,14 C40,14 50,48 80,48"/></circle>
+                  <circle class="trav" r="2.8"><animateMotion dur="2.6s" repeatCount="indefinite" keyPoints="0;1;1;0;0" keyTimes="0;0.62;0.74;0.86;1" calcMode="linear" path="M2,32 C40,32 56,48 80,48"/></circle>
+                  <circle class="trav" r="2.8"><animateMotion dur="2.6s" repeatCount="indefinite" keyPoints="0;1;1;0;0" keyTimes="0;0.62;0.74;0.86;1" calcMode="linear" path="M2,48 L80,48"/></circle>
+                  <circle class="trav" r="2.8"><animateMotion dur="2.6s" repeatCount="indefinite" keyPoints="0;1;1;0;0" keyTimes="0;0.62;0.74;0.86;1" calcMode="linear" path="M2,64 C40,64 56,48 80,48"/></circle>
+                  <circle class="trav" r="2.8"><animateMotion dur="2.6s" repeatCount="indefinite" keyPoints="0;1;1;0;0" keyTimes="0;0.62;0.74;0.86;1" calcMode="linear" path="M2,82 C40,82 50,48 80,48"/></circle>
+                  <circle class="pt" cx="80" cy="48" r="4"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="cardOutcome">
+              <div class="outcomeStat">
+                <div class="mono outcomeLabel">Outcome</div>
+                <div class="outcomeStat-num">~15&ndash;17 hrs</div>
+                <div class="outcomeUnit">saved / month</div>
+              </div>
+              <span class="readCase">Read the case <span class="arrow">&rarr;</span></span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────── ABOUT ───────────────────── -->
+  <section class="section about" id="about">
+    <!-- Ink blob, top-left -->
+    <svg class="section-wash section-wash--ink-tl" viewBox="0 0 560 420" aria-hidden="true" preserveAspectRatio="none">
+      <defs>
+        <filter id="about-wash-i" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="22" />
+        </filter>
+      </defs>
+      <path d="M100,220 C50,150 140,50 240,64 C340,80 420,52 488,128 C544,188 492,288 400,318 C320,344 222,344 162,308 C108,272 96,250 100,220 Z"
+            fill="#1F1A14" opacity="0.09" filter="url(#about-wash-i)" />
+    </svg>
+    <div class="container">
+      <div class="rail section-head">
+        <span class="mono">03 &nbsp;/&nbsp; About</span>
+        <h2 class="h2">
+          An independent practice in Austin<span class="dot" aria-hidden="true"></span>
+        </h2>
+      </div>
+
+      <div class="rail">
+        <div class="cols">
+          <div>
+            <div class="portrait">
+              <img src="assets/portrait.jpeg" alt="Juan M. González" />
+            </div>
+            <div class="portrait-caption">Juan M. Gonz&aacute;lez &middot; Austin, TX</div>
+          </div>
+          <div class="text-card">
+            <span class="card-eyebrow">AI Operations Consultant &middot; Austin, TX</span>
+            <p class="card-primary">
+              I&rsquo;m Juan Gonz&aacute;lez. I work with small business owners in services
+              and professional firms who are running the company themselves and feeling the friction.
+            </p>
+            <hr class="card-rule" />
+            <p class="card-secondary">
+              My background is in project coordination and operations. I spent four years
+              managing 3,000+ projects and 2,400+ client meetings at a B2B agency,
+              translating complex requirements into systems that actually moved. I&rsquo;ve
+              worked inside Salesforce, built multi-stage automation programs, led account
+              teams, and now apply that same operational thinking to small business
+              infrastructure using AI and modern automation tools.
+            </p>
+            <p class="card-secondary">
+              The goal is always the same: less administrative weight, more room to work.
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -1216,54 +1212,6 @@
       </div>
     </div>
   </footer>
-
-  <!-- Motion · 02 Precision — stat counter, triggered on viewport entry. -->
-  <script>
-    (function () {
-      var prefersReduced = window.matchMedia &&
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      function animateCount(el, target, suffix, duration) {
-        var start = performance.now();
-        function frame(now) {
-          var t = Math.min(1, (now - start) / duration);
-          var v = (t >= 1) ? target : Math.floor(target * t);
-          el.textContent = v + suffix;
-          if (t < 1) requestAnimationFrame(frame);
-        }
-        requestAnimationFrame(frame);
-      }
-
-      function setupCounter() {
-        var el = document.querySelector('.callout .v .num');
-        if (!el) return;
-        var target = parseInt(el.getAttribute('data-count') || '0', 10);
-        var suffix = el.getAttribute('data-suffix') || '';
-        if (prefersReduced) {
-          el.textContent = target + suffix;
-          return;
-        }
-        el.textContent = '0' + suffix;
-        var fired = false;
-        var io = new IntersectionObserver(function (entries) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting && !fired) {
-              fired = true;
-              animateCount(el, target, suffix, 1500);
-              io.disconnect();
-            }
-          });
-        }, { threshold: 0.5 });
-        io.observe(el);
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupCounter);
-      } else {
-        setupCounter();
-      }
-    })();
-  </script>
 
   <!-- Trigger workflow breath animation when it enters the viewport -->
   <script>
