@@ -134,10 +134,44 @@
   .cs-hero {
     background: var(--oat);
     color: var(--ink);
-    padding: 46px 18px 34px;
+    padding: 46px 18px 0;
     position: relative;
     overflow: hidden;
-    border-bottom: 1px solid var(--rule);
+  }
+
+  /* Download band — full-bleed oat-deep strip anchored to the stat bar */
+  .cta-band {
+    background: var(--oat-deep);
+    border-top: 1px solid var(--rule);
+    position: relative; z-index: 2;
+    margin: 32px -18px 0;
+  }
+  .cta-band .cta-inner {
+    max-width: 600px; margin: 0 auto; padding: 20px 18px;
+    display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  }
+  .cta-band .txt .t {
+    font-family: var(--f-display); font-variation-settings: "opsz" 72;
+    font-weight: 500; font-size: 18px; letter-spacing: -.01em;
+    color: var(--ink); line-height: 1.15;
+  }
+  .cta-band .txt .s {
+    font-family: var(--f-mono); font-size: 10px; letter-spacing: .13em;
+    text-transform: uppercase; color: var(--stone); margin-top: 6px;
+    white-space: nowrap;
+  }
+  .cta-band .dl {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center;
+    background: var(--persimmon); color: var(--oat);
+    font-family: var(--f-body); font-weight: 600; font-size: 14px; letter-spacing: .005em;
+    padding: 13px 24px; text-decoration: none; cursor: pointer; white-space: nowrap;
+    transition: background .3s ease, transform .3s ease;
+  }
+  .cta-band .dl:hover { background: var(--persimmon-deep); transform: translateY(-1px); }
+  @media (max-width: 420px) {
+    .cta-band .cta-inner { flex-direction: column; align-items: stretch; gap: 16px; }
+    .cta-band .dl { justify-content: center; }
   }
   .cs-hero .inner { max-width: 600px; margin: 0 auto; position: relative; z-index: 2; }
   .cs-hero .ink-wash {
@@ -456,6 +490,7 @@
     .closer        { background:var(--oat-deep) !important; }
     .closer h3     { color:var(--ink) !important; }
     .tally         { background:var(--ink) !important; }
+    .cta-band      { background:var(--oat-deep) !important; }
     .nav           { background:var(--oat) !important; }
   }
 </style>
@@ -513,6 +548,17 @@
     <h1>From a new subcontractor to a signed contract, without the busywork</h1>
     <p class="lede">PureSteel Construction Inc. was losing hours every week to copy-paste contract work. Here&rsquo;s how that entire chain became hands-off, and what it gave back.</p>
     <div class="client">PureSteel Construction Inc. &middot; Jonathan Arvizu, Owner</div>
+  </div>
+
+  <!-- Download band — full-bleed, seats on the stat bar -->
+  <div class="cta-band">
+    <div class="cta-inner">
+      <div class="txt">
+        <div class="t">The complete case study</div>
+        <div class="s">PDF &middot; 8 slides</div>
+      </div>
+      <a class="dl" href="PureSteel_Slides.pdf" download="PureSteel Case Study.pdf">Download</a>
+    </div>
   </div>
 </section>
 
