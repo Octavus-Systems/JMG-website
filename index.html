@@ -268,7 +268,68 @@
   }
   @media (max-width: 720px) {
     .nav .nav-links { display: none; }
+    .nav-hamburger  { display: flex; margin-left: auto; }
+    .cta-full       { display: none; }
+    .cta-short      { display: inline; }
   }
+
+  /* ── Nav hamburger + dropdown ────────────────────────────── */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    flex-shrink: 0;
+  }
+  .nav-hamburger span {
+    display: block;
+    width: 20px;
+    height: 1.5px;
+    background: var(--ink);
+    transition: transform 220ms var(--ease), opacity 150ms var(--ease);
+  }
+  .nav-hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .nav-hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  .nav-dropdown {
+    display: none;
+    flex-direction: column;
+    border-top: 1px solid var(--rule);
+    padding: 8px var(--container-pad) 16px;
+  }
+  .nav-dropdown.open {
+    display: flex;
+    animation: dropIn 200ms var(--ease) both;
+  }
+  @keyframes dropIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .nav-dropdown a {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule);
+    transition: color 200ms var(--ease);
+  }
+  .nav-dropdown a:last-child { border-bottom: 0; }
+  .nav-dropdown a:hover { color: var(--persimmon); }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-dropdown.open { animation: none; }
+    .nav-hamburger span { transition: none; }
+  }
+
+  .cta-short { display: none; }
 
   /* ── Hero ────────────────────────────────────────────────── */
   .hero {
@@ -875,10 +936,20 @@
         <a href="#contact">Contact</a>
         <a href="assets/juan-gonzalez-resume.pdf" download>Resume</a>
       </nav>
+      <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-dropdown">
+        <span></span><span></span><span></span>
+      </button>
       <a href="#contact" class="btn btn-primary">
-        Start a conversation <span class="arr">&rarr;</span>
+        <span class="cta-full">Start a conversation</span><span class="cta-short">Reach me</span> <span class="arr">&rarr;</span>
       </a>
     </div>
+    <nav class="nav-dropdown" id="nav-dropdown" aria-label="Mobile navigation">
+      <a href="#services">Services</a>
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a href="assets/juan-gonzalez-resume.pdf" download>Resume</a>
+    </nav>
   </header>
 
   <!-- ───────────────────── HERO ───────────────────── -->
@@ -1242,6 +1313,25 @@
         window.removeEventListener('scroll', onFirstScroll, { passive: true });
       }
       window.addEventListener('scroll', onFirstScroll, { passive: true });
+    })();
+  </script>
+
+  <!-- Hamburger menu toggle -->
+  <script>
+    (function () {
+      var btn  = document.querySelector('.nav-hamburger');
+      var menu = document.querySelector('.nav-dropdown');
+      if (!btn || !menu) return;
+      btn.addEventListener('click', function () {
+        var open = menu.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open);
+      });
+      menu.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          menu.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
     })();
   </script>
 
